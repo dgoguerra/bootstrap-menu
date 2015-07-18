@@ -1,4 +1,4 @@
-Bootstrap styled Context Menu
+Bootstrap Context Menu
 =============================
 
 A context menu plugin using Bootstrap's dropdown component.
@@ -8,6 +8,13 @@ it in the page, and to allow dynamically changing the state of its options
 easily.
 
 Depends on jQuery and lodash.
+
+Installation
+------------
+
+```
+npm install bootstrap-menu
+```
 
 Examples
 --------
@@ -40,3 +47,7 @@ var contextMenu = new ContextMenu({
     }
 });
 ```
+
+License
+-------
+MIT license - http://www.opensource.org/licenses/mit-license.php
