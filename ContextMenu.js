@@ -3,12 +3,22 @@
     var factory = function($, _) {
         'use strict';
 
+        var defaultOptions = {
+            /* user-defined function to obtain specific data about the currently
+             * opened element, to pass it to the rest of user-defined functions
+             * of an action. */
+            fetchElementData: _.noop,
+            /* how to calculate the position where the context menu opens.
+             * Valid values are 'mouse' and 'belowElemLeft', 'belowElemRight' */
+            menuPosition: 'mouse'
+        };
+
         var ContextMenu = function(options) {
-            this.options = options;
+            this.options = _.extend({}, defaultOptions, options);
             this.init();
         };
 
-        var renderContextMenu = function(actions, groupsArr) {
+        var renderMenu = function(actions, groupsArr) {
             var $menu = $('<div class="dropdown" style="position:absolute;z-index:1000;" />');
 
             var $ul = $('<ul class="dropdown-menu" role="menu" style="display:block;position:static;margin-bottom:5px;" />');
@@ -59,13 +69,38 @@
             return $menu.append($ul);
         };
 
+        var calcMenuPosition = function(event, $triggerElem) {
+            var position = { left: null, top: null };
+
+            switch (this.options.menuPosition) {
+                case 'mouse':
+                    position.left = event.offsetX + $triggerElem.offset().left;
+                    position.top = event.offsetY + $triggerElem.offset().top;
+                    break;
+
+                case 'belowElemLeft':
+                    position.left = $triggerElem.offset().left + $triggerElem.outerWidth();
+                    position.top = $triggerElem.offset().top + $triggerElem.outerHeight();
+                    break;
+
+                case 'belowElemRight':
+                    position.left = $triggerElem.offset().left + $triggerElem.outerWidth();
+                    position.top = $triggerElem.offset().top + $triggerElem.outerHeight();
+
+                    position.left -= this.$menu.outerWidth();
+                    break;
+            };
+
+            return position;
+        };
+
         ContextMenu.prototype.init = function() {
             var _this = this;
 
             this.$body = $('body');
 
             // el context menu.
-            this.$menu = renderContextMenu(this.options.actions, this.options.actionsGroups);
+            this.$menu = renderMenu(this.options.actions, this.options.actionsGroups);
             //this.$menu = $(this.options.menuSelector);
 
             /* se mueve el context menu a <body>, para poder usar "position: absolute"
@@ -78,16 +113,11 @@
             // instalar handler para todos los futuros elementos
             // en los que se abrirá el context menu
             this.$body.on(menuEvent, this.options.triggersSelector, function(evt) {
-                var $trigger = $(this);
+                var $triggerElem = $(this);
 
-                 var left = $trigger.offset().left + $trigger.outerWidth();
-                 var top = $trigger.offset().top + $trigger.outerHeight();
+                var position = calcMenuPosition.call(_this, evt, $triggerElem);
 
-                 if (_this.options.menuOrientation == 'right') {
-                    left -= _this.$menu.outerWidth();
-                 }
-
-                _this.open($trigger, left, top);
+                _this.open($triggerElem, position.left, position.top);
 
                 // cancelar propagación del evento, para evitar que suba hasta $body
                 // y se cierre el context menu como si se hubiera pinchado fuera.
