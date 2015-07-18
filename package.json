@@ -1,0 +1,12 @@
+{
+  "dependencies": {
+    "bootstrap": "^3.3.5",
+    "bootstrap-menu": "^1.0.1-unstable",
+    "jquery": "^2.1.4",
+    "lodash": "^3.10.0",
+    "toastr": "^2.1.0"
+  },
+  "scripts": {
+    "postinstall": "./scripts/publish-node-modules.sh"
+  }
+}
