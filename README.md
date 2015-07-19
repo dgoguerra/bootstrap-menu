@@ -9,6 +9,8 @@ easily.
 
 Depends on jQuery and lodash.
 
+* [Demos](https://dgoguerra.github.io/bootstrap-menu/demos.html)
+
 Installation
 ------------
 
