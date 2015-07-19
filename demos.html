@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <title>Bootstrap Context Menu</title>
+
+  <link rel="stylesheet" href="./stylesheets/bootstrap.css">
+  <link rel="stylesheet" href="./stylesheets/toastr.css">
+  <link rel="stylesheet" href="./stylesheets/highlight-8.6.default.min.css">
+
+  <script src="./javascripts/jquery.js"></script>
+  <script src="./javascripts/index.js"></script>
+  <script src="./javascripts/bootstrap.js"></script>
+  <script src="./javascripts/toastr.js"></script>
+  <script src="./javascripts/highlight-8.6.default.min.js"></script>
+  <script src="./javascripts/ContextMenu.js"></script>
+
+  <script>
+    hljs.initHighlightingOnLoad();
+  </script>
+
+  <style>
+  pre { padding: 0px; }
+  .marg-top-20 { margin-top: 20px; }
+  </style>
+</head>
+
+<body>
+  <nav class="navbar navbar-default navbar-static-top">
+    <div class="container">
+      <div class="navbar-header">
+        <a class="navbar-brand" href="./">Bootstrap Context Menu</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+    <h1>Basic demos</h1>
+
+    <h4>Demo 1</h4>
+    <p>On instantiation, the context menu is given a selector of elements where it will be triggered.</p>
+    <p>In this example, it will open anywhere inside the box on right click.</p>
+
+    <div class="row">
+      <div class="col-md-6">
+        <div id="demo1Box" class="text-center" style="height: 300px; border:1px solid #ddd">
+          <span style="line-height: 300px">Click anywhere inside this box</span>
+        </div>
+      </div>
+      <div class="col-md-12 marg-top-20">
+        <pre><code class="lang-js">var contextMenu = new ContextMenu('#demo1Box', {
+  actions: [{
+      name: 'Action',
+      onClick: function() {
+        toastr.info("'Action' clicked!");
+      }
+    }, {
+      name: 'Another action',
+      onClick: function() {
+        toastr.info("'Another action' clicked!");
+      }
+    }, {
+      name: 'A third action',
+      onClick: function() {
+        toastr.info("'A third action' clicked!");
+      }
+  }]
+});
+</code></pre>
+      </div>
+    </div>
+
+    <script>
+    var contextMenu = new ContextMenu('#demo1Box', {
+      actions: [{
+        name: 'Action',
+        onClick: function() {
+          toastr.info("'Action' clicked!");
+        }
+      }, {
+        name: 'Another action',
+        onClick: function() {
+          toastr.info("'Another action' clicked!");
+        }
+      }, {
+        name: 'A third action',
+        onClick: function() {
+          toastr.info("'A third action' clicked!");
+        }
+      }]
+    });
+    </script>
+
+    <h4>Demo 2</h4>
+    <p>You can also trigger the context menu to different events, and position it relative to the element where it was triggered.</p>
+
+    <div class="row">
+      <div class="col-md-6">
+        <button type="button" id="demo2LeftBtn" class="btn btn-default">Menu on right click</button>
+        <button type="button" id="demo2RightBtn" class="btn btn-default">Menu on left click</button>
+        <button type="button" id="demo2HoverBtn" class="btn btn-default">Menu on hover</button>
+      </div>
+      <div class="col-md-12 marg-top-20">
+        <pre><code class="lang-js">var menu1 = new ContextMenu('#demo2LeftBtn', {
+  menuEvent: 'right_click',
+  menuPosition: 'belowElemLeft', // matches element's left side
+  actions: /* ... */
+});
+
+var menu2 = new ContextMenu('#demo2RightBtn', {
+  menuEvent: 'left_click', // default value, can be omitted
+  menuPosition: 'belowElemLeft',
+  actions: /* ... */
+});
+
+var menu3 = new ContextMenu('#demo2HoverBtn', {
+  menuEvent: 'hover',
+  menuPosition: 'belowElemRight', // matches element's right side
+  actions: /* ... */
+});
+</code></pre>
+      </div>
+    </div>
+
+    <script>
+    var actions = [{
+      name: 'Action',
+      onClick: function() {
+        toastr.info("'Action' clicked!");
+      }
+    }, {
+      name: 'Another action',
+      onClick: function() {
+        toastr.info("'Another action' clicked!");
+      }
+    }];
+
+    var menu1 = new ContextMenu('#demo2LeftBtn', {
+      menuEvent: 'right_click',
+      menuPosition: 'belowElemLeft', // matches element's left side
+      actions: actions
+    });
+
+    var menu2 = new ContextMenu('#demo2RightBtn', {
+      menuEvent: 'left_click', // default value, can be omitted
+      menuPosition: 'belowElemLeft',
+      actions: actions
+    });
+
+    var menu3 = new ContextMenu('#demo2HoverBtn', {
+      menuEvent: 'hover',
+      menuPosition: 'belowElemRight', // matches element's right side
+      actions: actions
+    });
+    </script>
+
+
+    <h1>Advanced demos</h1>
+
+    <h4>Demo 3</h4>
+    <p>The <code>onClick</code> listeners can be aware of which one of a set of elements was clicked.</p>
+    
+    <div class="row">
+
+      <div class="col-md-8">
+        <table class="table table-striped table-hover">
+          <thead>
+            <tr>
+              <th>Id</th>
+              <th>Name</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="demo3TableRow" data-row-id="1">
+              <td>1</td>
+              <td>First row</td>
+              <td>Lorem ipsum dolor sit amet</td>
+            </tr>
+            <tr class="demo3TableRow" data-row-id="2">
+              <td>2</td>
+              <td>Second row</td>
+              <td>Nemo enim ipsam voluptatem quia voluptas</td>
+            </tr>
+            <tr class="demo3TableRow" data-row-id="3">
+              <td>3</td>
+              <td>Third row</td>
+              <td>Ut enim ad minima veniam</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="col-md-12">
+        <pre><code class="lang-js">/* A centralized container of the table data. You could hold the
+ * row-specific in a data-whatever-info="" attribute in each row,
+ * you decide what fetchElementData() does!
+ */
+var tableRows = {
+  '1': { name: 'First row', description: 'Lorem ipsum dolor sit amet' },
+  '2': { name: 'Second row', description: 'Nemo enim ipsam voluptatem quia voluptas' },
+  '3': { name: 'Third row', description: 'Ut enim ad minima veniam' }
+};
+
+var contextMenu = new ContextMenu('.demo3TableRow', {
+  /* a function to know which row was the context menu opened on,
+   * given the selected DOM element. When this function is defined,
+   * every user-defined action callback receives its return value as
+   * an argument. */
+  fetchElementData: function($rowElem) {
+    var rowId = $rowElem.data('rowId');
+    return tableRows[rowId];
+  },
+  actions: [{
+    name: 'Edit name',
+    onClick: function(row) {
+      toastr.info("'Edit name' clicked on '" + row.name + "'");
+    }
+  }, {
+    name: 'Edit description',
+    onClick: function(row) {
+      toastr.info("'Edit description' clicked on '" + row.name + "'");
+    }
+  }]
+});
+</code></pre>
+      </div>
+    </div>
+
+    <script>
+    /* A centralized container of the table data. You could hold the
+     * row-specific in a data-whatever-info="" attribute in each row,
+     * you decide what fetchElementData() does!
+     */
+    var tableRows = {
+      '1': { name: 'First row', description: 'Lorem ipsum dolor sit amet' },
+      '2': { name: 'Second row', description: 'Nemo enim ipsam voluptatem quia voluptas' },
+      '3': { name: 'Third row', description: 'Ut enim ad minima veniam' }
+    };
+
+    var contextMenu = new ContextMenu('.demo3TableRow', {
+      /* a function to know which row was the context menu opened on,
+       * given the selected DOM element. When this function is defined,
+       * every user-defined action callback receives its return value as
+       * an argument. */
+      fetchElementData: function($rowElem) {
+        var rowId = $rowElem.data('rowId');
+        return tableRows[rowId];
+      },
+      actions: [{
+        name: 'Edit name',
+        onClick: function(row) {
+          toastr.info("'Edit name' clicked on '" + row.name + "'");
+        }
+      }, {
+        name: 'Edit description',
+        onClick: function(row) {
+          toastr.info("'Edit description' clicked on '" + row.name + "'");
+        }
+      }]
+    });
+    </script>
+
+    <h4>Demo 4</h4>
+    <p>You can give every action an id and group them in the dropdown with the <code>actionsGroups</code> option. You can also use <code>isShown</code> and <code>isEnabled</code> callbacks in an action to control when it should not appear, or appear disabled.</p>
+
+    <div class="row">
+
+      <div class="col-md-8">
+        <table class="table table-striped table-hover">
+          <thead>
+            <tr>
+              <th>Id</th>
+              <th>Name</th>
+              <th>Description</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="demo4TableRow" data-row-id="1">
+              <td>1</td>
+              <td>First row</td>
+              <td>Lorem ipsum dolor sit amet</td>
+              <td></td>
+            </tr>
+            <tr class="demo4TableRow" data-row-id="2">
+              <td>2</td>
+              <td>Second row</td>
+              <td>Nemo enim ipsam voluptatem quia voluptas</td>
+              <td><span class="label label-warning pull-right">Not editable</span></td>
+            </tr>
+            <tr class="demo4TableRow" data-row-id="3">
+              <td>3</td>
+              <td>Third row</td>
+              <td>Ut enim ad minima veniam</td>
+              <td><span class="label label-danger pull-right">Not deletable</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="col-md-12">
+        <pre><code class="lang-js">var tableRows = {
+  '1': { name: 'First row', isEditable: true, isRemovable: true },
+  '2': { name: 'Second row', isEditable: false, isRemovable: true },
+  '3': { name: 'Third row', isEditable: true, isRemovable: false }
+};
+
+var contextMenu = new ContextMenu('.demo4TableRow', {
+  fetchElementData: function($rowElem) {
+    var rowId = $rowElem.data('rowId');
+    return tableRows[rowId];
+  },
+  /* group actions by their id to make use of separators between
+   * them in the context menu. Actions not added to any group with
+   * this option will appear in a default group of their own. */
+  actionsGroups: [
+    ['setEditable', 'setUneditable' ],
+    ['deleteRow']
+  ],
+  /* you can declare 'actions' as an object instead of an array,
+   * and its keys will be used as action ids. */
+  actions: {
+    editName: {
+      name: 'Edit name',
+      onClick: function(row) {
+        toastr.info("'Edit name' clicked on '" + row.name + "'");
+      },
+      isEnabled: function(row) {
+        return row.isEditable;
+      }
+    },
+    editDescription: {
+      name: 'Edit description',
+      onClick: function(row) {
+        toastr.info("'Edit description' clicked on '" + row.name + "'");
+      },
+      isEnabled: function(row) {
+        return row.isEditable;
+      }
+    },
+    setEditable: {
+      name: 'Set editable',
+      onClick: function(row) {
+        toastr.info("'Set editable' clicked on '" + row.name + "'");
+      },
+      isShown: function(row) {
+        return !row.isEditable;
+      }
+    },
+    setUneditable: {
+      name: 'Set uneditable',
+      onClick: function(row) {
+        toastr.info("'Set uneditable' clicked on '" + row.name + "'");
+      },
+      isShown: function(row) {
+        return row.isEditable;
+      }
+    },
+    deleteRow: {
+      name: 'Delete row',
+      onClick: function(row) {
+        toastr.info("'Delete row' clicked on '" + row.name + "'");
+      },
+      isEnabled: function(row) {
+        return row.isRemovable;
+      }
+    }
+  }
+});
+</code></pre>
+      </div>
+    </div>
+
+    <script>
+    var tableRows = {
+      '1': { name: 'First row', isEditable: true, isRemovable: true },
+      '2': { name: 'Second row', isEditable: false, isRemovable: true },
+      '3': { name: 'Third row', isEditable: true, isRemovable: false }
+    };
+
+    var contextMenu = new ContextMenu('.demo4TableRow', {
+      fetchElementData: function($rowElem) {
+        var rowId = $rowElem.data('rowId');
+        return tableRows[rowId];
+      },
+      /* group actions by their id to make use of separators between
+       * them in the context menu. Actions not added to any group with
+       * this option will appear in a default group of their own. */
+      actionsGroups: [
+        ['setEditable', 'setUneditable' ],
+        ['deleteRow']
+      ],
+      /* you can declare 'actions' as an object instead of an array,
+       * and its keys will be used as action ids. */
+      actions: {
+        editName: {
+          name: 'Edit name',
+          onClick: function(row) {
+            toastr.info("'Edit name' clicked on '" + row.name + "'");
+          },
+          isEnabled: function(row) {
+            return row.isEditable;
+          }
+        },
+        editDescription: {
+          name: 'Edit description',
+          onClick: function(row) {
+            toastr.info("'Edit description' clicked on '" + row.name + "'");
+          },
+          isEnabled: function(row) {
+            return row.isEditable;
+          }
+        },
+        setEditable: {
+          name: 'Set editable',
+          onClick: function(row) {
+            toastr.info("'Set editable' clicked on '" + row.name + "'");
+          },
+          isShown: function(row) {
+            return !row.isEditable;
+          }
+        },
+        setUneditable: {
+          name: 'Set uneditable',
+          onClick: function(row) {
+            toastr.info("'Set uneditable' clicked on '" + row.name + "'");
+          },
+          isShown: function(row) {
+            return row.isEditable;
+          }
+        },
+        deleteRow: {
+          name: 'Delete row',
+          onClick: function(row) {
+            toastr.info("'Delete row' clicked on '" + row.name + "'");
+          },
+          isEnabled: function(row) {
+            return row.isRemovable;
+          }
+        }
+      }
+    });
+    </script>
+
+    <div style="margin-bottom: 50px"></div>
+
+  </div>
+
+</body>
+
+</html>
