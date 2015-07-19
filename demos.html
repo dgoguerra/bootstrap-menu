@@ -110,7 +110,7 @@
         <pre><code class="lang-js">var menu1 = new ContextMenu('#demo2LeftBtn', {
   menuEvent: 'click', // default value, can be omitted
   menuSource: 'element',
-  menuPosition: 'belowLeft', // matches element's left side
+  menuPosition: 'belowLeft', // default value, can be omitted
   actions: /* ... */
 });
 
@@ -124,7 +124,7 @@ var menu2 = new ContextMenu('#demo2RightBtn', {
 var menu3 = new ContextMenu('#demo2HoverBtn', {
   menuEvent: 'hover',
   menuSource: 'element',
-  menuPosition: 'belowRight', // default value, can be omitted
+  menuPosition: 'belowRight', // matches element's right side
   actions: /* ... */
 });
 </code></pre>

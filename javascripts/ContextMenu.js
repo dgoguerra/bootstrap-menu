@@ -13,7 +13,7 @@
             menuSource: 'mouse',
             /* how to calculate the position of the context menu based on its source.
              * Valid values are 'aboveLeft', 'aboveRight', 'belowLeft', and 'belowRight'. */
-            menuPosition: 'belowRight',
+            menuPosition: 'belowLeft',
             /* the event to listen to open the menu.
              * Valid values are 'click', 'right-click', 'hover' */
             menuEvent: 'right-click',
