@@ -1,6 +1,6 @@
 {
   "name": "bootstrap-menu",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Context menu plugin using Bootstrap's style",
   "main": "ContextMenu.js",
   "dependencies": {
