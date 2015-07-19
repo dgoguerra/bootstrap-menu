@@ -8,12 +8,15 @@
              * opened element, to pass it to the rest of user-defined functions
              * of an action. */
             fetchElementData: _.noop,
-            /* how to calculate the position where the context menu opens.
-             * Valid values are 'mouse' and 'belowElemLeft', 'belowElemRight' */
-            menuPosition: 'mouse',
+            /* what the source of the context menu should be when opened.
+             * Valid values are 'mouse' and 'element'. */
+            menuSource: 'mouse',
+            /* how to calculate the position of the context menu based on its source.
+             * Valid values are 'aboveLeft', 'aboveRight', 'belowLeft', and 'belowRight'. */
+            menuPosition: 'belowRight',
             /* the event to listen to open the menu.
-             * Valid values are 'right_click', 'left_click', 'hover' */
-            menuEvent: 'left_click',
+             * Valid values are 'click', 'right-click', 'hover' */
+            menuEvent: 'right-click',
             /* group actions to render them next to each other, with a separator
              * between each group. */
             actionsGroups: []
@@ -71,15 +74,30 @@
         };
 
         function calcMenuPosition(_this, $trigger, event) {
-            var triggerElemPos = {
-                left: $trigger.offset().left,
-                top: $trigger.offset().top
-            };
+            // the element relative to whom the menu must open
+            var elemPos = { left: null, top: null };
+            var elemDim = { height: null, width: null };
 
-            var triggerElemDim = {
-                height: $trigger.outerHeight(),
-                width: $trigger.outerWidth()
-            };
+            switch (_this.options.menuSource) {
+                case 'mouse':
+                    elemPos.left = event.pageX;
+                    /* substract 4 pixels frmo the Y axis when relative to the mouse,
+                     * to compensate the dropdown's top margin.
+                     * TODO: must only do this when menuPosition is below the element
+                     * (currently, always). */
+                    elemPos.top = event.pageY - 4;
+                    elemDim.height = 0;
+                    elemDim.width = 0;
+                    break;
+                case 'element':
+                    elemPos.left = $trigger.offset().left;
+                    elemPos.top = $trigger.offset().top;
+                    elemDim.height = $trigger.outerHeight();
+                    elemDim.width = $trigger.outerWidth();
+                    break;
+                default:
+                    throw new Error("Unknown ContextMenu 'menuSource' option");
+            }
 
             var menuDim = {
                 height: _this.$menu.outerHeight(),
@@ -89,26 +107,17 @@
             var menuPos = { left: null, top: null };
 
             switch (_this.options.menuPosition) {
-                case 'mouse':
-                    var mousePos = { left: event.offsetX, top: event.offsetY };
-                    menuPos.left = mousePos.left + triggerElemPos.left;
-                    menuPos.top = mousePos.top + triggerElemPos.top;
+                case 'belowRight':
+                    menuPos.left = elemPos.left + elemDim.width - menuDim.width;
+                    menuPos.top = elemPos.top + elemDim.height;
                     break;
-
-                case 'belowElemLeft':
-                    menuPos.left = triggerElemPos.left + triggerElemDim.width;
-                    menuPos.top = triggerElemPos.top + triggerElemDim.height;
-
-                    menuPos.left -= triggerElemDim.width;
+                case 'belowLeft':
+                    menuPos.left = elemPos.left;
+                    menuPos.top = elemPos.top + elemDim.height;
                     break;
-
-                case 'belowElemRight':
-                    menuPos.left = triggerElemPos.left + triggerElemDim.width;
-                    menuPos.top = triggerElemPos.top + triggerElemDim.height;
-
-                    menuPos.left -= menuDim.width;
-                    break;
-            };
+                default:
+                    throw new Error("Unknown ContextMenu 'menuPosition' option");
+            }
 
             return menuPos;
         };
@@ -117,10 +126,10 @@
             var openEventName = null;
 
             switch (_this.options.menuEvent) {
-                case 'right_click':
+                case 'click':
                     openEventName = 'click';
                     break;
-                case 'left_click':
+                case 'right-click':
                     openEventName = 'contextmenu';
                     break;
                 case 'hover':
@@ -147,9 +156,9 @@
 
         function setupCloseEventListeners(_this, $triggerElem) {
             switch (_this.options.menuEvent) {
-                case 'right_click':
+                case 'click':
                     break;
-                case 'left_click':
+                case 'right-click':
                     break;
                 case 'hover':
                     // close the menu when the mouse is moved outside both

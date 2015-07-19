@@ -102,26 +102,29 @@
 
     <div class="row">
       <div class="col-md-6">
-        <button type="button" id="demo2LeftBtn" class="btn btn-default">Menu on right click</button>
-        <button type="button" id="demo2RightBtn" class="btn btn-default">Menu on left click</button>
+        <button type="button" id="demo2LeftBtn" class="btn btn-default">Menu on click</button>
+        <button type="button" id="demo2RightBtn" class="btn btn-default">Menu on right click</button>
         <button type="button" id="demo2HoverBtn" class="btn btn-default">Menu on hover</button>
       </div>
       <div class="col-md-12 marg-top-20">
         <pre><code class="lang-js">var menu1 = new ContextMenu('#demo2LeftBtn', {
-  menuEvent: 'right_click',
-  menuPosition: 'belowElemLeft', // matches element's left side
+  menuEvent: 'click', // default value, can be omitted
+  menuSource: 'element',
+  menuPosition: 'belowLeft', // matches element's left side
   actions: /* ... */
 });
 
 var menu2 = new ContextMenu('#demo2RightBtn', {
-  menuEvent: 'left_click', // default value, can be omitted
-  menuPosition: 'belowElemLeft',
+  menuEvent: 'right-click',
+  menuSource: 'element',
+  menuPosition: 'belowLeft',
   actions: /* ... */
 });
 
 var menu3 = new ContextMenu('#demo2HoverBtn', {
   menuEvent: 'hover',
-  menuPosition: 'belowElemRight', // matches element's right side
+  menuSource: 'element',
+  menuPosition: 'belowRight', // default value, can be omitted
   actions: /* ... */
 });
 </code></pre>
@@ -142,20 +145,23 @@ var menu3 = new ContextMenu('#demo2HoverBtn', {
     }];
 
     var menu1 = new ContextMenu('#demo2LeftBtn', {
-      menuEvent: 'right_click',
-      menuPosition: 'belowElemLeft', // matches element's left side
+      menuEvent: 'click', // default value, can be omitted
+      menuSource: 'element',
+      menuPosition: 'belowLeft', // matches element's left side
       actions: actions
     });
 
     var menu2 = new ContextMenu('#demo2RightBtn', {
-      menuEvent: 'left_click', // default value, can be omitted
-      menuPosition: 'belowElemLeft',
+      menuEvent: 'right-click',
+      menuSource: 'element',
+      menuPosition: 'belowLeft',
       actions: actions
     });
 
     var menu3 = new ContextMenu('#demo2HoverBtn', {
       menuEvent: 'hover',
-      menuPosition: 'belowElemRight', // matches element's right side
+      menuSource: 'element',
+      menuPosition: 'belowRight', // default value, can be omitted
       actions: actions
     });
     </script>
@@ -367,7 +373,7 @@ var contextMenu = new ContextMenu('.demo4TableRow', {
         toastr.info("'Delete row' clicked on '" + row.name + "'");
       },
       isEnabled: function(row) {
-        return row.isRemovable;
+        return row.isEditable && row.isRemovable;
       }
     }
   }
@@ -440,7 +446,7 @@ var contextMenu = new ContextMenu('.demo4TableRow', {
             toastr.info("'Delete row' clicked on '" + row.name + "'");
           },
           isEnabled: function(row) {
-            return row.isRemovable;
+            return row.isEditable && row.isRemovable;
           }
         }
       }
