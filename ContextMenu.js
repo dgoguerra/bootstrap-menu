@@ -25,7 +25,7 @@
         function renderMenu(_this) {
             var $menu = $('<div class="dropdown" style="position:absolute;z-index:1000;" />');
 
-            var $ul = $('<ul class="dropdown-menu" role="menu" style="display:block;position:static;margin-bottom:5px;" />');
+            var $ul = $('<ul class="dropdown-menu" role="menu" style="display:block;position:static;margin-bottom:5px;font-size:0.9em;" />');
 
             // group all actions following the actionsGroups option, to
             // add a separator between each of them.
@@ -39,6 +39,10 @@
                 groups[ind+1] = [];
             });
 
+            // find out if any of the actions has an icon
+            var actionsHaveIcon = false;
+
+            // add each action to the group it belongs to, or the default group
             _.each(_this.options.actions, function(action, actionId) {
                 var addedToGroup = false;
 
@@ -51,6 +55,10 @@
 
                 if (addedToGroup == false) {
                     groups[0].push(actionId);
+                }
+
+                if (typeof action.iconClass !== 'undefined') {
+                    actionsHaveIcon = true;
                 }
             });
 
@@ -66,7 +74,21 @@
 
                 _.each(actionsIds, function(actionId) {
                     var action = _this.options.actions[actionId];
-                    $ul.append('<li role="presentation" data-action="'+actionId+'"><a href="#" role="menuitem">'+action.name+'</a></li>');
+
+                    /* At least an action has an icon. Add the icon of the current action,
+                     * or room to align it with the actions which do have one. */
+                    if (actionsHaveIcon === true) {
+                        $ul.append('<li role="presentation" data-action="'+actionId+'">'
+                            + '<a href="#" role="menuitem">'
+                            + '<i class="fa fa-fw fa-lg ' + (action.iconClass || '') + '"></i> ' + action.name
+                            + '</a>'
+                            + '</li>'
+                        );
+                    }
+                    // neither of the actions have an icon.
+                    else {
+                        $ul.append('<li role="presentation" data-action="'+actionId+'"><a href="#" role="menuitem">'+action.name+'</a></li>');
+                    }
                 });
             });
 
