@@ -11,6 +11,7 @@
   <title>Bootstrap Context Menu</title>
 
   <link rel="stylesheet" href="./stylesheets/bootstrap.css">
+  <link rel="stylesheet" href="./stylesheets/font-awesome.css">
   <link rel="stylesheet" href="./stylesheets/toastr.css">
   <link rel="stylesheet" href="./stylesheets/highlight-8.6.default.min.css">
 
@@ -275,6 +276,8 @@ var contextMenu = new ContextMenu('.demo3TableRow', {
     <h4>Demo 4</h4>
     <p>You can give every action an id and group them in the dropdown with the <code>actionsGroups</code> option. You can also use <code>isShown</code> and <code>isEnabled</code> callbacks in an action to control when it should not appear, or appear disabled.</p>
 
+    <p>Font Awesome icons can be used adding the <code>iconClass</code> property to an action, with the class name of the icon to use.</p>
+
     <div class="row">
 
       <div class="col-md-8">
@@ -333,6 +336,7 @@ var contextMenu = new ContextMenu('.demo4TableRow', {
   actions: {
     editName: {
       name: 'Edit name',
+      iconClass: 'fa-pencil',
       onClick: function(row) {
         toastr.info("'Edit name' clicked on '" + row.name + "'");
       },
@@ -342,6 +346,7 @@ var contextMenu = new ContextMenu('.demo4TableRow', {
     },
     editDescription: {
       name: 'Edit description',
+      iconClass: 'fa-pencil',
       onClick: function(row) {
         toastr.info("'Edit description' clicked on '" + row.name + "'");
       },
@@ -351,6 +356,7 @@ var contextMenu = new ContextMenu('.demo4TableRow', {
     },
     setEditable: {
       name: 'Set editable',
+      iconClass: 'fa-unlock',
       onClick: function(row) {
         toastr.info("'Set editable' clicked on '" + row.name + "'");
       },
@@ -360,6 +366,7 @@ var contextMenu = new ContextMenu('.demo4TableRow', {
     },
     setUneditable: {
       name: 'Set uneditable',
+      iconClass: 'fa-lock',
       onClick: function(row) {
         toastr.info("'Set uneditable' clicked on '" + row.name + "'");
       },
@@ -369,6 +376,7 @@ var contextMenu = new ContextMenu('.demo4TableRow', {
     },
     deleteRow: {
       name: 'Delete row',
+      iconClass: 'fa-trash-o',
       onClick: function(row) {
         toastr.info("'Delete row' clicked on '" + row.name + "'");
       },
@@ -406,6 +414,7 @@ var contextMenu = new ContextMenu('.demo4TableRow', {
       actions: {
         editName: {
           name: 'Edit name',
+          iconClass: 'fa-pencil',
           onClick: function(row) {
             toastr.info("'Edit name' clicked on '" + row.name + "'");
           },
@@ -415,6 +424,7 @@ var contextMenu = new ContextMenu('.demo4TableRow', {
         },
         editDescription: {
           name: 'Edit description',
+          iconClass: 'fa-pencil',
           onClick: function(row) {
             toastr.info("'Edit description' clicked on '" + row.name + "'");
           },
@@ -424,6 +434,7 @@ var contextMenu = new ContextMenu('.demo4TableRow', {
         },
         setEditable: {
           name: 'Set editable',
+          iconClass: 'fa-unlock',
           onClick: function(row) {
             toastr.info("'Set editable' clicked on '" + row.name + "'");
           },
@@ -433,6 +444,7 @@ var contextMenu = new ContextMenu('.demo4TableRow', {
         },
         setUneditable: {
           name: 'Set uneditable',
+          iconClass: 'fa-lock',
           onClick: function(row) {
             toastr.info("'Set uneditable' clicked on '" + row.name + "'");
           },
@@ -442,6 +454,7 @@ var contextMenu = new ContextMenu('.demo4TableRow', {
         },
         deleteRow: {
           name: 'Delete row',
+          iconClass: 'fa-trash-o',
           onClick: function(row) {
             toastr.info("'Delete row' clicked on '" + row.name + "'");
           },
