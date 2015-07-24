@@ -8,6 +8,7 @@
   },
   "devDependencies": {
     "jquery-ui": "^1.10.5",
+    "node-static": "^0.7.7",
     "webpack": "^1.10.5"
   },
   "scripts": {
