@@ -1,7 +1,10 @@
 'use strict';
 
-var $ = require('jquery');
 var _ = require('lodash');
+var $ = require('jquery');
+
+require('jquery-ui/position');
+
 
 var defaultOptions = {
     /* user-defined function to obtain specific data about the currently
@@ -23,9 +26,9 @@ var defaultOptions = {
 };
 
 function renderMenu(_this) {
-    var $menu = $('<div class="dropdown bootstrapMenu" style="position:absolute;z-index:1000;" />');
+    var $menu = $('<div class="dropdown bootstrapMenu" style="z-index:1000;position:absolute;" />');
 
-    var $ul = $('<ul class="dropdown-menu" role="menu" style="display:block;position:static;margin-bottom:5px;font-size:0.9em;" />');
+    var $ul = $('<ul class="dropdown-menu" style="position:static;display:block;font-size:0.9em;" />');
 
     // group all actions following the actionsGroups option, to
     // add a separator between each of them.
@@ -95,55 +98,6 @@ function renderMenu(_this) {
     return $menu.append($ul);
 };
 
-function calcMenuPosition(_this, $trigger, event) {
-    // the element relative to whom the menu must open
-    var elemPos = { left: null, top: null };
-    var elemDim = { height: null, width: null };
-
-    switch (_this.options.menuSource) {
-        case 'mouse':
-            elemPos.left = event.pageX;
-            /* substract 4 pixels frmo the Y axis when relative to the mouse,
-             * to compensate the dropdown's top margin.
-             * TODO: must only do this when menuPosition is below the element
-             * (currently, always). */
-            elemPos.top = event.pageY - 4;
-            elemDim.height = 0;
-            elemDim.width = 0;
-            break;
-        case 'element':
-            elemPos.left = $trigger.offset().left;
-            elemPos.top = $trigger.offset().top;
-            elemDim.height = $trigger.outerHeight();
-            elemDim.width = $trigger.outerWidth();
-            break;
-        default:
-            throw new Error("Unknown BootstrapMenu 'menuSource' option");
-    }
-
-    var menuDim = {
-        height: _this.$menu.outerHeight(),
-        width: _this.$menu.outerWidth()
-    };
-
-    var menuPos = { left: null, top: null };
-
-    switch (_this.options.menuPosition) {
-        case 'belowRight':
-            menuPos.left = elemPos.left + elemDim.width - menuDim.width;
-            menuPos.top = elemPos.top + elemDim.height;
-            break;
-        case 'belowLeft':
-            menuPos.left = elemPos.left;
-            menuPos.top = elemPos.top + elemDim.height;
-            break;
-        default:
-            throw new Error("Unknown BootstrapMenu 'menuPosition' option");
-    }
-
-    return menuPos;
-};
-
 function setupOpenEventListeners(_this) {
     var openEventName = null;
 
@@ -166,9 +120,7 @@ function setupOpenEventListeners(_this) {
     _this.$context.on(openEventName, _this.selector, function(evt) {
         var $triggerElem = $(this);
 
-        var position = calcMenuPosition(_this, $triggerElem, evt);
-
-        _this.open($triggerElem, position.left, position.top);
+        _this.open($triggerElem, evt);
 
         // cancel event propagation, to avoid it bubbling up to this.$context
         // and closing the context menu as if the user clicked outside the menu.
@@ -218,6 +170,7 @@ BootstrapMenu.prototype.init = function() {
 
     // jQuery object of the rendered context menu. Not part of the DOM yet.
     this.$menu = renderMenu(this);
+    this.$menuList = this.$menu.children();
 
     /* append the context menu to <body> to be able to use "position: absolute"
      * absolute to the whole window. */
@@ -229,14 +182,62 @@ BootstrapMenu.prototype.init = function() {
     existingInstances.push(this);
 };
 
+BootstrapMenu.prototype.updatePosition = function($triggerElem, event) {
+    var menuLocation = null; // my
+    var relativeToElem = null; // of
+    var relativeToLocation = null; // at
+
+    switch (this.options.menuSource) {
+        case 'element':
+            relativeToElem = $triggerElem;
+            break;
+        case 'mouse':
+            relativeToElem = event;
+            break;
+        default:
+            throw new Error("Unknown BootstrapMenu 'menuSource' option");
+    }
+
+    switch (this.options.menuPosition) {
+        case 'belowRight':
+            menuLocation = 'right top';
+            relativeToLocation = 'right bottom';
+            break;
+        case 'belowLeft':
+            menuLocation = 'left top';
+            relativeToLocation = 'left bottom';
+            break;
+        case 'aboveRight':
+            menuLocation = 'right bottom';
+            relativeToLocation = 'right top';
+            break;
+        case 'aboveLeft':
+            menuLocation = 'left bottom';
+            relativeToLocation = 'left top';
+            break;
+        default:
+            throw new Error("Unknown BootstrapMenu 'menuPosition' option");
+    }
+
+    // update the menu's height and width manually
+    this.$menu.css({ display: 'block' });
+
+    // once the menu is not hidden anymore, we can obtain its content's height and width,
+    // to manually update it in the menu
+    this.$menu.css({
+        height: this.$menuList.height(),
+        width: this.$menuList.width()
+    });
+
+    this.$menu.position({ my: menuLocation, at: relativeToLocation, of: relativeToElem });
+};
+
 // open the context menu
-BootstrapMenu.prototype.open = function($trigger, left, top) {
+BootstrapMenu.prototype.open = function($triggerElem, event) {
     var _this = this;
 
     // first close all open instances of opened context menus in the page
     BootstrapMenu.closeAll();
-
-    this.$menu.css({ display: 'block', left: left, top: top });
 
     var $actions = this.$menu.find('[data-action]');
 
@@ -250,7 +251,7 @@ BootstrapMenu.prototype.open = function($trigger, left, top) {
 
         var actionId = $action.data('action');
         var action = _this.options.actions[actionId];
-        var elemData = _this.options.fetchElementData($trigger);
+        var elemData = _this.options.fetchElementData($triggerElem);
 
         if (action.isShown && action.isShown(elemData) === false) {
             $action.hide();
@@ -261,6 +262,13 @@ BootstrapMenu.prototype.open = function($trigger, left, top) {
             $action.addClass('disabled');
         }
     });
+
+    // once it is known which actions are or arent being shown
+    // (so we know the final height of the context menu),
+    // calculate its position
+    this.updatePosition($triggerElem, event);
+
+    this.$menu.show();
 
     // clear all possible handlers from a previous open event, where an option
     // wasn't selected.
@@ -282,14 +290,14 @@ BootstrapMenu.prototype.open = function($trigger, left, top) {
         if ($action.is('.disabled'))
             return;
 
-        var elemData = _this.options.fetchElementData($trigger);
+        var elemData = _this.options.fetchElementData($triggerElem);
 
         /* call the user click handler. It receives the optional user-defined data,
          * or undefined. */
         _this.options.actions[actionId].onClick(elemData);
     });
 
-    setupCloseEventListeners(this, $trigger);
+    setupCloseEventListeners(this, $triggerElem);
 };
 
 // close the context menu
