@@ -23,7 +23,7 @@
         };
 
         function renderMenu(_this) {
-            var $menu = $('<div class="dropdown" style="position:absolute;z-index:1000;" />');
+            var $menu = $('<div class="dropdown bootstrapMenu" style="position:absolute;z-index:1000;" />');
 
             var $ul = $('<ul class="dropdown-menu" role="menu" style="display:block;position:static;margin-bottom:5px;font-size:0.9em;" />');
 
