@@ -53,7 +53,7 @@
                     }
                 });
 
-                if (addedToGroup == false) {
+                if (addedToGroup === false) {
                     groups[0].push(actionId);
                 }
 
@@ -67,7 +67,7 @@
                 if (actionsIds.length == 0)
                     return;
 
-                if (isFirstNonEmptyGroup == false) {
+                if (isFirstNonEmptyGroup === false) {
                     $ul.append('<li class="divider"></li>');
                 }
                 isFirstNonEmptyGroup = false;
@@ -118,7 +118,7 @@
                     elemDim.width = $trigger.outerWidth();
                     break;
                 default:
-                    throw new Error("Unknown ContextMenu 'menuSource' option");
+                    throw new Error("Unknown BootstrapMenu 'menuSource' option");
             }
 
             var menuDim = {
@@ -138,7 +138,7 @@
                     menuPos.top = elemPos.top + elemDim.height;
                     break;
                 default:
-                    throw new Error("Unknown ContextMenu 'menuPosition' option");
+                    throw new Error("Unknown BootstrapMenu 'menuPosition' option");
             }
 
             return menuPos;
@@ -158,7 +158,7 @@
                     openEventName = 'mouseenter';
                     break;
                 default:
-                    throw new Error("Unknown ContextMenu 'menuEvent' option");
+                    throw new Error("Unknown BootstrapMenu 'menuEvent' option");
             }
 
             // install the handler for every future elements where
@@ -188,7 +188,7 @@
                     // the context menu itself.
                     var $elemsToCheck = $triggerElem.add(_this.$menu);
 
-                    $elemsToCheck.on('mouseleave.ContextMenuAction', function(evt) {
+                    $elemsToCheck.on('mouseleave.BootstrapMenuAction', function(evt) {
                         var destElement = evt.toElement || evt.relatedTarget;
                         if (!$triggerElem.is(destElement) && !_this.$menu.is(destElement)) {
                             _this.close();
@@ -196,16 +196,16 @@
                     });
                     break;
                 default:
-                    throw new Error("Unknown ContextMenu 'menuEvent' option");
+                    throw new Error("Unknown BootstrapMenu 'menuEvent' option");
             }
 
             // it the user clicks outside the context menu, close it.
-            _this.$context.on('click.ContextMenuAction', function() {
+            _this.$context.on('click.BootstrapMenuAction', function() {
                 _this.close();
             });
         };
 
-        var ContextMenu = function(selector, options) {
+        var BootstrapMenu = function(selector, options) {
             this.selector = selector;
             this.options = _.extend({}, defaultOptions, options);
             this.init();
@@ -213,7 +213,7 @@
 
         var existingInstances = [];
 
-        ContextMenu.prototype.init = function() {
+        BootstrapMenu.prototype.init = function() {
             this.$context = $('body');
 
             // jQuery object of the rendered context menu. Not part of the DOM yet.
@@ -230,11 +230,11 @@
         };
 
         // open the context menu
-        ContextMenu.prototype.open = function($trigger, left, top) {
+        BootstrapMenu.prototype.open = function($trigger, left, top) {
             var _this = this;
 
             // first close all open instances of opened context menus in the page
-            ContextMenu.closeAll();
+            BootstrapMenu.closeAll();
 
             this.$menu.css({ display: 'block', left: left, top: top });
 
@@ -264,16 +264,16 @@
 
             // clear all possible handlers from a previous open event, where an option
             // wasn't selected.
-            this.$menu.off('click.ContextMenuAction');
+            this.$menu.off('click.BootstrapMenuAction');
 
             // handler to run when an option is selected
-            this.$menu.on('click.ContextMenuAction', function(evt) {
+            this.$menu.on('click.BootstrapMenuAction', function(evt) {
                 evt.preventDefault();
 
                 var $target = $(evt.target);
 
                 // uninstall the current listener
-                _this.$menu.off('click.ContextMenuAction');
+                _this.$menu.off('click.BootstrapMenuAction');
 
                 var $action = $target.is('[data-action]') ? $target : $target.closest('[data-action]');
                 var actionId = $action.data('action');
@@ -293,19 +293,19 @@
         };
 
         // close the context menu
-        ContextMenu.prototype.close = function() {
-            this.$context.off('.ContextMenuAction');
+        BootstrapMenu.prototype.close = function() {
+            this.$context.off('.BootstrapMenuAction');
             this.$menu.hide();
         };
 
         // close all instances of context menus
-        ContextMenu.closeAll = function() {
+        BootstrapMenu.closeAll = function() {
             _.each(existingInstances, function(contextMenu) {
                 contextMenu.close();
             });
         };
 
-        return ContextMenu;
+        return BootstrapMenu;
     };
 
     // Define as an AMD module if possible
@@ -320,15 +320,15 @@
     else {
         // check that the module dependencies are defined
         if (typeof jQuery === 'undefined') {
-            throw new Error('ContextMenu requires jQuery');
+            throw new Error('BootstrapMenu requires jQuery');
         }
         if (typeof _ === 'undefined') {
-            throw new Error('ContextMenu requires lodash');
+            throw new Error('BootstrapMenu requires lodash');
         }
 
         // define module only if it doesn't exist yet
-        if (typeof ContextMenu === 'undefined') {
-            window.ContextMenu = factory(jQuery, _);
+        if (typeof BootstrapMenu === 'undefined') {
+            window.BootstrapMenu = factory(jQuery, _);
         }
     }
 
