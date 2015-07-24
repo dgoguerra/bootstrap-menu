@@ -10,17 +10,21 @@
 
   <title>Bootstrap Context Menu</title>
 
-  <link rel="stylesheet" href="./stylesheets/bootstrap.css">
-  <link rel="stylesheet" href="./stylesheets/font-awesome.css">
+  <!-- BootstrapMenu's styling dependencies -->
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/css/bootstrap.min.css">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.css">
+
+  <!-- Other plugins stylesheets for this demo page, unrelated to BootstrapMenu -->
   <link rel="stylesheet" href="./stylesheets/toastr.css">
   <link rel="stylesheet" href="./stylesheets/highlight-8.6.default.min.css">
 
-  <script src="./javascripts/jquery.js"></script>
-  <script src="./javascripts/index.js"></script>
-  <script src="./javascripts/bootstrap.js"></script>
+  <!-- jQuery and BootstrapMenu -->
+  <script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+  <script src="./javascripts/BootstrapMenu.min.js"></script>
+
+  <!-- Other plugins used in this demo page -->
   <script src="./javascripts/toastr.js"></script>
   <script src="./javascripts/highlight-8.6.default.min.js"></script>
-  <script src="./javascripts/ContextMenu.js"></script>
 
   <script>
     hljs.initHighlightingOnLoad();
@@ -44,7 +48,7 @@
   <div class="container">
     <h1>Basic demos</h1>
 
-    <h4>Demo 1</h4>
+    <h4 id="demo1">Demo 1</h4>
     <p>On instantiation, the context menu is given a selector of elements where it will be triggered.</p>
     <p>In this example, it will open anywhere inside the box on right click.</p>
 
@@ -55,7 +59,7 @@
         </div>
       </div>
       <div class="col-md-12 marg-top-20">
-        <pre><code class="lang-js">var contextMenu = new ContextMenu('#demo1Box', {
+        <pre><code class="lang-js">var menu = new BootstrapMenu('#demo1Box', {
   actions: [{
       name: 'Action',
       onClick: function() {
@@ -78,7 +82,7 @@
     </div>
 
     <script>
-    var contextMenu = new ContextMenu('#demo1Box', {
+    var menu = new BootstrapMenu('#demo1Box', {
       actions: [{
         name: 'Action',
         onClick: function() {
@@ -98,7 +102,7 @@
     });
     </script>
 
-    <h4>Demo 2</h4>
+    <h4 id="demo2">Demo 2</h4>
     <p>You can also trigger the context menu to different events, and position it relative to the element where it was triggered.</p>
 
     <div class="row">
@@ -108,21 +112,21 @@
         <button type="button" id="demo2HoverBtn" class="btn btn-default">Menu on hover</button>
       </div>
       <div class="col-md-12 marg-top-20">
-        <pre><code class="lang-js">var menu1 = new ContextMenu('#demo2LeftBtn', {
+        <pre><code class="lang-js">var menu1 = new BootstrapMenu('#demo2LeftBtn', {
   menuEvent: 'click', // default value, can be omitted
   menuSource: 'element',
   menuPosition: 'belowLeft', // default value, can be omitted
   actions: /* ... */
 });
 
-var menu2 = new ContextMenu('#demo2RightBtn', {
+var menu2 = new BootstrapMenu('#demo2RightBtn', {
   menuEvent: 'right-click',
   menuSource: 'element',
   menuPosition: 'belowLeft',
   actions: /* ... */
 });
 
-var menu3 = new ContextMenu('#demo2HoverBtn', {
+var menu3 = new BootstrapMenu('#demo2HoverBtn', {
   menuEvent: 'hover',
   menuSource: 'element',
   menuPosition: 'belowRight', // matches element's right side
@@ -145,21 +149,21 @@ var menu3 = new ContextMenu('#demo2HoverBtn', {
       }
     }];
 
-    var menu1 = new ContextMenu('#demo2LeftBtn', {
+    var menu1 = new BootstrapMenu('#demo2LeftBtn', {
       menuEvent: 'click', // default value, can be omitted
       menuSource: 'element',
       menuPosition: 'belowLeft', // matches element's left side
       actions: actions
     });
 
-    var menu2 = new ContextMenu('#demo2RightBtn', {
+    var menu2 = new BootstrapMenu('#demo2RightBtn', {
       menuEvent: 'right-click',
       menuSource: 'element',
       menuPosition: 'belowLeft',
       actions: actions
     });
 
-    var menu3 = new ContextMenu('#demo2HoverBtn', {
+    var menu3 = new BootstrapMenu('#demo2HoverBtn', {
       menuEvent: 'hover',
       menuSource: 'element',
       menuPosition: 'belowRight', // default value, can be omitted
@@ -170,7 +174,7 @@ var menu3 = new ContextMenu('#demo2HoverBtn', {
 
     <h1>Advanced demos</h1>
 
-    <h4>Demo 3</h4>
+    <h4 id="demo3">Demo 3</h4>
     <p>The <code>onClick</code> listeners can be aware of which one of a set of elements was clicked.</p>
     
     <div class="row">
@@ -205,8 +209,8 @@ var menu3 = new ContextMenu('#demo2HoverBtn', {
       </div>
       <div class="col-md-12">
         <pre><code class="lang-js">/* A centralized container of the table data. You could hold the
- * row-specific in a data-whatever-info="" attribute in each row,
- * you decide what fetchElementData() does!
+ * row-specific data in a data-whatever-info="" attribute in each
+ * row, you decide what fetchElementData() does!
  */
 var tableRows = {
   '1': { name: 'First row', description: 'Lorem ipsum dolor sit amet' },
@@ -214,7 +218,7 @@ var tableRows = {
   '3': { name: 'Third row', description: 'Ut enim ad minima veniam' }
 };
 
-var contextMenu = new ContextMenu('.demo3TableRow', {
+var menu = new BootstrapMenu('.demo3TableRow', {
   /* a function to know which row was the context menu opened on,
    * given the selected DOM element. When this function is defined,
    * every user-defined action callback receives its return value as
@@ -241,8 +245,8 @@ var contextMenu = new ContextMenu('.demo3TableRow', {
 
     <script>
     /* A centralized container of the table data. You could hold the
-     * row-specific in a data-whatever-info="" attribute in each row,
-     * you decide what fetchElementData() does!
+     * row-specific data in a data-whatever-info="" attribute in each
+     * row, you decide what fetchElementData() does!
      */
     var tableRows = {
       '1': { name: 'First row', description: 'Lorem ipsum dolor sit amet' },
@@ -250,7 +254,7 @@ var contextMenu = new ContextMenu('.demo3TableRow', {
       '3': { name: 'Third row', description: 'Ut enim ad minima veniam' }
     };
 
-    var contextMenu = new ContextMenu('.demo3TableRow', {
+    var menu = new BootstrapMenu('.demo3TableRow', {
       /* a function to know which row was the context menu opened on,
        * given the selected DOM element. When this function is defined,
        * every user-defined action callback receives its return value as
@@ -273,7 +277,7 @@ var contextMenu = new ContextMenu('.demo3TableRow', {
     });
     </script>
 
-    <h4>Demo 4</h4>
+    <h4 id="demo4">Demo 4</h4>
     <p>You can give every action an id and group them in the dropdown with the <code>actionsGroups</code> option. You can also use <code>isShown</code> and <code>isEnabled</code> callbacks in an action to control when it should not appear, or appear disabled.</p>
 
     <p>Font Awesome icons can be used adding the <code>iconClass</code> property to an action, with the class name of the icon to use.</p>
@@ -319,7 +323,7 @@ var contextMenu = new ContextMenu('.demo3TableRow', {
   '3': { name: 'Third row', isEditable: true, isRemovable: false }
 };
 
-var contextMenu = new ContextMenu('.demo4TableRow', {
+var menu = new BootstrapMenu('.demo4TableRow', {
   fetchElementData: function($rowElem) {
     var rowId = $rowElem.data('rowId');
     return tableRows[rowId];
@@ -397,7 +401,7 @@ var contextMenu = new ContextMenu('.demo4TableRow', {
       '3': { name: 'Third row', isEditable: true, isRemovable: false }
     };
 
-    var contextMenu = new ContextMenu('.demo4TableRow', {
+    var menu = new BootstrapMenu('.demo4TableRow', {
       fetchElementData: function($rowElem) {
         var rowId = $rowElem.data('rowId');
         return tableRows[rowId];
