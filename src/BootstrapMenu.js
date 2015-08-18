@@ -7,22 +7,42 @@ require('jquery-ui/position');
 
 
 var defaultOptions = {
+    /* container of the context menu, where it will be created and where
+     * event listeners will be installed. */
+    container: 'body',
+
     /* user-defined function to obtain specific data about the currently
      * opened element, to pass it to the rest of user-defined functions
      * of an action. */
     fetchElementData: _.noop,
+
     /* what the source of the context menu should be when opened.
      * Valid values are 'mouse' and 'element'. */
     menuSource: 'mouse',
+
     /* how to calculate the position of the context menu based on its source.
      * Valid values are 'aboveLeft', 'aboveRight', 'belowLeft', and 'belowRight'. */
     menuPosition: 'belowLeft',
+
     /* the event to listen to open the menu.
      * Valid values are 'click', 'right-click', 'hover' */
-    menuEvent: 'right-click',
+    menuEvent: 'right-click', // TODO rename to menuAction in next mayor version
+
     /* group actions to render them next to each other, with a separator
      * between each group. */
-    actionsGroups: []
+    actionsGroups: [],
+
+    /* In some weird cases, another plugin may be installing 'click' listeners
+     * in the anchors used for each action of the context menu, and stopping
+     * the event bubbling before it reachs this plugin's listener.
+     *
+     * For those cases, _actionSelectEvent can be used to change the event we
+     * listen to, for example to 'mousedown'.
+     *
+     * Unless the context menu is not working due to this and a workaround is
+     * needed, this option can be safely ignored.
+     */
+    _actionSelectEvent: 'click'
 };
 
 function renderMenu(_this) {
@@ -96,7 +116,7 @@ function renderMenu(_this) {
     });
 
     return $menu.append($ul);
-};
+}
 
 function setupOpenEventListeners(_this) {
     var openEventName = null;
@@ -117,18 +137,54 @@ function setupOpenEventListeners(_this) {
 
     // install the handler for every future elements where
     // the context menu will open
-    _this.$context.on(openEventName, _this.selector, function(evt) {
-        var $triggerElem = $(this);
+    _this.$container.on(openEventName + _this.namespace, _this.selector, function(evt) {
+        var $openTarget = $(this);
 
-        _this.open($triggerElem, evt);
+        _this.open($openTarget, evt);
 
-        // cancel event propagation, to avoid it bubbling up to this.$context
+        // cancel event propagation, to avoid it bubbling up to this.$container
         // and closing the context menu as if the user clicked outside the menu.
         return false;
     });
-};
+}
 
-function setupCloseEventListeners(_this, $triggerElem) {
+function clearOpenEventListeners(_this) {
+    _this.$container.off(_this.namespace);
+}
+
+function setupActionsEventListeners(_this) {
+    var actionSelectEvent = _this.options._actionSelectEvent + _this.namespace;
+
+    // handler to run when an option is selected
+    _this.$menu.on(actionSelectEvent, function(evt) {
+        evt.preventDefault();
+        evt.stopPropagation();
+
+        var $target = $(evt.target);
+
+        var $action = $target.is('[data-action]') ? $target : $target.closest('[data-action]');
+        var actionId = $action.data('action');
+
+        // action is disabled, dont do anything
+        if ($action.is('.disabled'))
+            return;
+
+        var targetData = _this.options.fetchElementData(_this.$openTarget);
+
+        /* call the user click handler. It receives the optional user-defined data,
+         * or undefined. */
+        _this.options.actions[actionId].onClick(targetData);
+
+        // close the menu
+        _this.close();
+    });
+}
+
+function clearActionsEventListeners(_this) {
+    _this.$menu.off(_this.namespace);
+}
+
+function setupCloseEventListeners(_this) {
     switch (_this.options.menuEvent) {
         case 'click':
             break;
@@ -138,11 +194,12 @@ function setupCloseEventListeners(_this, $triggerElem) {
             // close the menu when the mouse is moved outside both
             // the element where the context menu was opened, and
             // the context menu itself.
-            var $elemsToCheck = $triggerElem.add(_this.$menu);
+            var $elemsToCheck = _this.$openTarget.add(_this.$menu);
 
-            $elemsToCheck.on('mouseleave.BootstrapMenuAction', function(evt) {
+            $elemsToCheck.on('mouseleave' + _this.closeNamespace, function(evt) {
                 var destElement = evt.toElement || evt.relatedTarget;
-                if (!$triggerElem.is(destElement) && !_this.$menu.is(destElement)) {
+                if (!_this.$openTarget.is(destElement) && !_this.$menu.is(destElement)) {
+                    $elemsToCheck.off(_this.closeNamespace);
                     _this.close();
                 }
             });
@@ -152,21 +209,30 @@ function setupCloseEventListeners(_this, $triggerElem) {
     }
 
     // it the user clicks outside the context menu, close it.
-    _this.$context.on('click.BootstrapMenuAction', function() {
+    _this.$container.on('click' + _this.closeNamespace, function() {
         _this.close();
     });
-};
+}
+
+function clearCloseEventListeners(_this) {
+    _this.$container.off(_this.closeNamespace);
+}
 
 var BootstrapMenu = function(selector, options) {
     this.selector = selector;
     this.options = _.extend({}, defaultOptions, options);
+
+    // namespaces to use when registering event listeners
+    this.namespace = _.uniqueId('.BootstrapMenu_');
+    this.closeNamespace = _.uniqueId('.BootstrapMenuClose_');
+
     this.init();
 };
 
 var existingInstances = [];
 
 BootstrapMenu.prototype.init = function() {
-    this.$context = $('body');
+    this.$container = $(this.options.container);
 
     // jQuery object of the rendered context menu. Not part of the DOM yet.
     this.$menu = renderMenu(this);
@@ -174,25 +240,35 @@ BootstrapMenu.prototype.init = function() {
 
     /* append the context menu to <body> to be able to use "position: absolute"
      * absolute to the whole window. */
-    this.$menu.hide().appendTo(this.$context);
+    this.$menu.hide().appendTo(this.$container);
+
+    /* the element in which the context menu was opened. Updated every time
+     * the menu is opened. */
+    this.$openTarget = null;
+
+    /* event that triggered the context menu to open. Updated every time
+     * the menu is opened. */
+    this.openEvent = null;
 
     setupOpenEventListeners(this);
+
+    setupActionsEventListeners(this);
 
     // keep track of all the existing context menu instances in the page
     existingInstances.push(this);
 };
 
-BootstrapMenu.prototype.updatePosition = function($triggerElem, event) {
+BootstrapMenu.prototype.updatePosition = function() {
     var menuLocation = null; // my
     var relativeToElem = null; // of
     var relativeToLocation = null; // at
 
     switch (this.options.menuSource) {
         case 'element':
-            relativeToElem = $triggerElem;
+            relativeToElem = this.$openTarget;
             break;
         case 'mouse':
-            relativeToElem = event;
+            relativeToElem = this.openEvent;
             break;
         default:
             throw new Error("Unknown BootstrapMenu 'menuSource' option");
@@ -233,11 +309,17 @@ BootstrapMenu.prototype.updatePosition = function($triggerElem, event) {
 };
 
 // open the context menu
-BootstrapMenu.prototype.open = function($triggerElem, event) {
+BootstrapMenu.prototype.open = function($openTarget, event) {
     var _this = this;
 
     // first close all open instances of opened context menus in the page
     BootstrapMenu.closeAll();
+
+    this.$openTarget = $openTarget;
+
+    this.openEvent = event;
+
+    var targetData = _this.options.fetchElementData(_this.$openTarget);
 
     var $actions = this.$menu.find('[data-action]');
 
@@ -251,14 +333,13 @@ BootstrapMenu.prototype.open = function($triggerElem, event) {
 
         var actionId = $action.data('action');
         var action = _this.options.actions[actionId];
-        var elemData = _this.options.fetchElementData($triggerElem);
 
-        if (action.isShown && action.isShown(elemData) === false) {
+        if (action.isShown && action.isShown(targetData) === false) {
             $action.hide();
             return;
         }
 
-        if (action.isEnabled && action.isEnabled(elemData) === false) {
+        if (action.isEnabled && action.isEnabled(targetData) === false) {
             $action.addClass('disabled');
         }
     });
@@ -266,44 +347,25 @@ BootstrapMenu.prototype.open = function($triggerElem, event) {
     // once it is known which actions are or arent being shown
     // (so we know the final height of the context menu),
     // calculate its position
-    this.updatePosition($triggerElem, event);
+    this.updatePosition();
 
     this.$menu.show();
 
-    // clear all possible handlers from a previous open event, where an option
-    // wasn't selected.
-    this.$menu.off('click.BootstrapMenuAction');
-
-    // handler to run when an option is selected
-    this.$menu.on('click.BootstrapMenuAction', function(evt) {
-        evt.preventDefault();
-
-        var $target = $(evt.target);
-
-        // uninstall the current listener
-        _this.$menu.off('click.BootstrapMenuAction');
-
-        var $action = $target.is('[data-action]') ? $target : $target.closest('[data-action]');
-        var actionId = $action.data('action');
-
-        // action is disabled, dont do anything
-        if ($action.is('.disabled'))
-            return;
-
-        var elemData = _this.options.fetchElementData($triggerElem);
-
-        /* call the user click handler. It receives the optional user-defined data,
-         * or undefined. */
-        _this.options.actions[actionId].onClick(elemData);
-    });
-
-    setupCloseEventListeners(this, $triggerElem);
+    setupCloseEventListeners(this);
 };
 
 // close the context menu
 BootstrapMenu.prototype.close = function() {
-    this.$context.off('.BootstrapMenuAction');
+    // hide the menu
     this.$menu.hide();
+
+    clearCloseEventListeners(this);
+};
+
+BootstrapMenu.prototype.destroy = function() {
+    this.close();
+    clearOpenEventListeners(this);
+    clearActionsEventListeners(this);
 };
 
 // close all instances of context menus

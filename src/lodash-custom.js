@@ -9,5 +9,6 @@ lodash.noop = require('_lodash/utility/noop');
 lodash.each = require('_lodash/collection/each');
 lodash.contains = require('_lodash/collection/contains');
 lodash.extend = require('_lodash/object/extend');
+lodash.uniqueId = require('_lodash/utility/uniqueId');
 
 module.exports = lodash;
