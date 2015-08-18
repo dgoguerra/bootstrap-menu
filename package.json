@@ -1,6 +1,6 @@
 {
   "name": "bootstrap-menu",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "Context menu plugin using Bootstrap's style",
   "main": "src/BootstrapMenu.js",
   "dependencies": {
@@ -15,7 +15,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "prepublish": "./build.sh",
-    "serve" : "node_modules/.bin/static"
+    "serve": "node_modules/.bin/static"
   },
   "repository": {
     "type": "git",
