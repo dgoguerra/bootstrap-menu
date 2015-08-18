@@ -10,5 +10,6 @@ lodash.each = require('_lodash/collection/each');
 lodash.contains = require('_lodash/collection/contains');
 lodash.extend = require('_lodash/object/extend');
 lodash.uniqueId = require('_lodash/utility/uniqueId');
+lodash.isFunction = require('_lodash/lang/isFunction');
 
 module.exports = lodash;

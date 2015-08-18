@@ -1,8 +1,9 @@
 'use strict';
 
 var _ = require('lodash');
-var $ = require('jquery');
+var classNames = require('classnames');
 
+var $ = require('jquery');
 require('jquery-ui/position');
 
 
@@ -323,8 +324,8 @@ BootstrapMenu.prototype.open = function($openTarget, event) {
 
     var $actions = this.$menu.find('[data-action]');
 
-    // clear previousle hidden and disabled actions
-    $actions.show().removeClass('disabled');
+    // clear previously hidden actions
+    $actions.show();
 
     /* go through all actions to update which ones to show
      * enabled/disabled and which ones to hide. */
@@ -333,6 +334,13 @@ BootstrapMenu.prototype.open = function($openTarget, event) {
 
         var actionId = $action.data('action');
         var action = _this.options.actions[actionId];
+
+        var classes = action.classNames || null;
+
+        if (classes && _.isFunction(classes))
+            classes = classes(targetData);
+
+        $action.attr('class', classNames(classes || ''));
 
         if (action.isShown && action.isShown(targetData) === false) {
             $action.hide();

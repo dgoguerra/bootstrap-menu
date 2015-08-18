@@ -310,6 +310,92 @@
     });
     </script>
 
+    <h4>Demo 5</h4>
+
+    <p>Classes can also be added easily to an action by setting a <code>classNames</code> property, which will be parsed through the <a href="https://github.com/JedWatson/classnames">classnames</a> utility. This property can be a string, an object or a function that receives the element's fetched data as a first argument.</p>
+
+    <div class="row">
+
+      <style>
+        bg-danger { background-color: #f2dede; }
+        bg-success { background-color: #dff0d8; }
+      </style>
+
+      <div class="col-md-8">
+        <table class="table table-striped table-hover">
+          <thead>
+            <tr>
+              <th>Id</th>
+              <th>Name</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="demo5TableRow" data-row-id="1">
+              <td>1</td>
+              <td>First row</td>
+              <td>Lorem ipsum dolor sit amet</td>
+            </tr>
+            <tr class="demo5TableRow" data-row-id="2">
+              <td>2</td>
+              <td>Second row</td>
+              <td>Nemo enim ipsam voluptatem quia voluptas</td>
+            </tr>
+            <tr class="demo5TableRow" data-row-id="3">
+              <td>3</td>
+              <td>Third row</td>
+              <td><b><i>No description</i></b></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <script>
+    var tableRows = {
+      '1': { name: 'First row', description: 'Lorem ipsum dolor sit amet' },
+      '2': { name: 'Second row', description: 'Nemo enim ipsam voluptatem quia voluptas' },
+      '3': { name: 'Third row', description: null }
+    };
+
+    var menu = new BootstrapMenu('.demo5TableRow', {
+      fetchElementData: function($rowElem) {
+        var rowId = $rowElem.data('rowId');
+        return tableRows[rowId];
+      },
+      actions: [{
+          name: 'Edit name',
+          iconClass: 'fa-pencil',
+          onClick: function(row) {
+            toastr.info("'Edit name' clicked on '" + row.name + "'");
+          }
+        }, {
+          name: 'Edit description',
+          iconClass: 'fa-pencil',
+          classNames: function(row) {
+            return { 'bg-success': row.description == null };
+          },
+          onClick: function(row) {
+            toastr.info("'Edit description' clicked on '" + row.name + "'");
+          }
+        }, {
+          name: 'Another option',
+          iconClass: 'fa-folder-o',
+          onClick: function(row) {
+            toastr.info("'Another option' clicked on '" + row.name + "'");
+          }
+        }, {
+          name: 'Delete row',
+          iconClass: 'fa-trash-o',
+          classNames: 'bg-danger',
+          onClick: function(row) {
+            toastr.info("'Delete row' clicked on '" + row.name + "'");
+          }
+        }
+      ]
+    });
+    </script>
+
     <div style="margin-bottom: 50px"></div>
 
   </div>
