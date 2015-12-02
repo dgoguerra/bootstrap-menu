@@ -102,16 +102,22 @@ function renderMenu(_this) {
             /* At least an action has an icon. Add the icon of the current action,
              * or room to align it with the actions which do have one. */
             if (actionsHaveIcon === true) {
-                $ul.append('<li role="presentation" data-action="'+actionId+'">'
-                    + '<a href="#" role="menuitem">'
-                    + '<i class="fa fa-fw fa-lg ' + (action.iconClass || '') + '"></i> ' + action.name
-                    + '</a>'
-                    + '</li>'
+                $ul.append(
+                    '<li role="presentation" data-action="'+actionId+'">' +
+                    '<a href="#" role="menuitem">' +
+                    '<i class="fa fa-fw fa-lg ' + (action.iconClass || '') + '"></i> ' +
+                    '<span class="actionName"></span>' +
+                    '</a>' +
+                    '</li>'
                 );
             }
             // neither of the actions have an icon.
             else {
-                $ul.append('<li role="presentation" data-action="'+actionId+'"><a href="#" role="menuitem">'+action.name+'</a></li>');
+                $ul.append(
+                    '<li role="presentation" data-action="'+actionId+'">' +
+                    '<a href="#" role="menuitem"><span class="actionName"></span></a>' +
+                    '</li>'
+                );
             }
         });
     });
@@ -327,7 +333,7 @@ BootstrapMenu.prototype.open = function($openTarget, event) {
     // clear previously hidden actions
     $actions.show();
 
-    /* go through all actions to update which ones to show
+    /* go through all actions to update the text to show, which ones to show
      * enabled/disabled and which ones to hide. */
     $actions.each(function() {
         var $action = $(this);
@@ -346,6 +352,11 @@ BootstrapMenu.prototype.open = function($openTarget, event) {
             $action.hide();
             return;
         }
+
+        // the name provided for an action may be dynamic, provided as a function
+        $action.find('.actionName').html(
+            _.isFunction(action.name) && action.name(targetData) || action.name
+        );
 
         if (action.isEnabled && action.isEnabled(targetData) === false) {
             $action.addClass('disabled');
