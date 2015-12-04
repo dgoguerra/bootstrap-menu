@@ -11,22 +11,29 @@
   <title>Bootstrap Context Menu</title>
 
   <!-- BootstrapMenu's styling dependencies -->
-  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/css/bootstrap.min.css">
-  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.css">
+  <link rel="stylesheet" href="./css/bootstrap.min.css">
+  <link rel="stylesheet" href="./css/font-awesome.css">
 
   <!-- Other plugins stylesheets for this demo page, unrelated to BootstrapMenu -->
-  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.1/toastr.min.css">
+  <link rel="stylesheet" href="./css/toastr.css">
+  <link rel="stylesheet" href="./css/highlight-8.6.default.min.css">
 
   <!-- jQuery and BootstrapMenu -->
-  <script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+  <script src="./js/jquery-2.1.4.min.js"></script>
   <script src="../dist/BootstrapMenu.min.js"></script>
 
   <!-- Other plugins used in this demo page -->
-  <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.1/toastr.min.js"></script>
+  <script src="./js/toastr.js"></script>
+  <script src="./js/highlight-8.6.default.min.js"></script>
+
+  <script>
+    hljs.initHighlightingOnLoad();
+  </script>
 
   <style>
   pre { padding: 0px; }
   .marg-top-20 { margin-top: 20px; }
+  .hidden { display: none; }
   </style>
 </head>
 
@@ -42,15 +49,37 @@
   <div class="container">
     <h1>Basic demos</h1>
 
-    <h4>Demo 1</h4>
+    <h4 id="demo1">Demo 1</h4>
     <p>On instantiation, the context menu is given a selector of elements where it will be triggered.</p>
     <p>In this example, it will open anywhere inside the box on right click.</p>
 
-    <div class="row">
+    <div class="row collapsibleContainer">
       <div class="col-md-6">
         <div id="demo1Box" class="text-center" style="height: 300px; border:1px solid #ddd">
-          <span style="line-height: 300px">Click anywhere inside this box</span>
+          <span style="line-height: 300px">Right click anywhere inside this box</span>
         </div>
+      </div>
+      <div class="col-md-12 marg-top-20 collapsibleContainer">
+        <p><a href="#" class="collapsibleBtn">View the code <i class="fa fa-fw fa-chevron-circle-left"></i></a></p>
+        <pre class="collapsible hidden"><code class="lang-js">var menu = new BootstrapMenu('#demo1Box', {
+  actions: [{
+      name: 'Action',
+      onClick: function() {
+        toastr.info("'Action' clicked!");
+      }
+    }, {
+      name: 'Another action',
+      onClick: function() {
+        toastr.info("'Another action' clicked!");
+      }
+    }, {
+      name: 'A third action',
+      onClick: function() {
+        toastr.info("'A third action' clicked!");
+      }
+  }]
+});
+</code></pre>
       </div>
     </div>
 
@@ -75,7 +104,7 @@
     });
     </script>
 
-    <h4>Demo 2</h4>
+    <h4 id="demo2">Demo 2</h4>
     <p>You can also trigger the context menu to different events, and position it relative to the element where it was triggered.</p>
 
     <div class="row">
@@ -83,6 +112,30 @@
         <button type="button" id="demo2LeftBtn" class="btn btn-default">Menu on click</button>
         <button type="button" id="demo2RightBtn" class="btn btn-default">Menu on right click</button>
         <button type="button" id="demo2HoverBtn" class="btn btn-default">Menu on hover</button>
+      </div>
+      <div class="col-md-12 marg-top-20 collapsibleContainer">
+        <p><a href="#" class="collapsibleBtn">View the code <i class="fa fa-fw fa-chevron-circle-left"></i></a></p>
+        <pre class="collapsible hidden"><code class="lang-js">var menu1 = new BootstrapMenu('#demo2LeftBtn', {
+  menuEvent: 'click', // default value, can be omitted
+  menuSource: 'element',
+  menuPosition: 'belowLeft', // default value, can be omitted
+  actions: /* ... */
+});
+
+var menu2 = new BootstrapMenu('#demo2RightBtn', {
+  menuEvent: 'right-click',
+  menuSource: 'element',
+  menuPosition: 'belowLeft',
+  actions: /* ... */
+});
+
+var menu3 = new BootstrapMenu('#demo2HoverBtn', {
+  menuEvent: 'hover',
+  menuSource: 'element',
+  menuPosition: 'belowRight', // matches element's right side
+  actions: /* ... */
+});
+</code></pre>
       </div>
     </div>
 
@@ -124,7 +177,7 @@
 
     <h1>Advanced demos</h1>
 
-    <h4>Demo 3</h4>
+    <h4 id="demo3">Demo 3</h4>
     <p>The <code>onClick</code> listeners can be aware of which one of a set of elements was clicked.</p>
     
     <div class="row">
@@ -133,7 +186,7 @@
         <table class="table table-striped table-hover">
           <thead>
             <tr>
-              <th>Id</th>
+              <th>#</th>
               <th>Name</th>
               <th>Description</th>
             </tr>
@@ -156,6 +209,41 @@
             </tr>
           </tbody>
         </table>
+      </div>
+      <div class="col-md-12 collapsibleContainer">
+        <p><a href="#" class="collapsibleBtn">View the code <i class="fa fa-fw fa-chevron-circle-left"></i></a></p>
+        <pre class="collapsible hidden"><code class="lang-js">/* A centralized container of the table data. You could hold the
+ * row-specific data in a data-whatever-info="" attribute in each
+ * row, you decide what fetchElementData() does!
+ */
+var tableRows = {
+  '1': { name: 'First row', description: 'Lorem ipsum dolor sit amet' },
+  '2': { name: 'Second row', description: 'Nemo enim ipsam voluptatem quia voluptas' },
+  '3': { name: 'Third row', description: 'Ut enim ad minima veniam' }
+};
+
+var menu = new BootstrapMenu('.demo3TableRow', {
+  /* a function to know which row was the context menu opened on,
+   * given the selected DOM element. When this function is defined,
+   * every user-defined action callback receives its return value as
+   * an argument. */
+  fetchElementData: function($rowElem) {
+    var rowId = $rowElem.data('rowId');
+    return tableRows[rowId];
+  },
+  actions: [{
+    name: 'Edit name',
+    onClick: function(row) {
+      toastr.info("'Edit name' clicked on '" + row.name + "'");
+    }
+  }, {
+    name: 'Edit description',
+    onClick: function(row) {
+      toastr.info("'Edit description' clicked on '" + row.name + "'");
+    }
+  }]
+});
+</code></pre>
       </div>
     </div>
 
@@ -193,7 +281,7 @@
     });
     </script>
 
-    <h4>Demo 4</h4>
+    <h4 id="demo4">Demo 4</h4>
     <p>You can give every action an id and group them in the dropdown with the <code>actionsGroups</code> option. You can also use <code>isShown</code> and <code>isEnabled</code> callbacks in an action to control when it should not appear, or appear disabled.</p>
 
     <p>Font Awesome icons can be used adding the <code>iconClass</code> property to an action, with the class name of the icon to use.</p>
@@ -204,7 +292,7 @@
         <table class="table table-striped table-hover">
           <thead>
             <tr>
-              <th>Id</th>
+              <th>#</th>
               <th>Name</th>
               <th>Description</th>
               <th></th>
@@ -231,6 +319,83 @@
             </tr>
           </tbody>
         </table>
+      </div>
+      <div class="col-md-12 collapsibleContainer">
+        <p><a href="#" class="collapsibleBtn">View the code <i class="fa fa-fw fa-chevron-circle-left"></i></a></p>
+        <pre class="collapsible hidden"><code class="lang-js">var tableRows = {
+  '1': { name: 'First row', isEditable: true, isRemovable: true },
+  '2': { name: 'Second row', isEditable: false, isRemovable: true },
+  '3': { name: 'Third row', isEditable: true, isRemovable: false }
+};
+
+var menu = new BootstrapMenu('.demo4TableRow', {
+  fetchElementData: function($rowElem) {
+    var rowId = $rowElem.data('rowId');
+    return tableRows[rowId];
+  },
+  /* group actions by their id to make use of separators between
+   * them in the context menu. Actions not added to any group with
+   * this option will appear in a default group of their own. */
+  actionsGroups: [
+    ['setEditable', 'setUneditable' ],
+    ['deleteRow']
+  ],
+  /* you can declare 'actions' as an object instead of an array,
+   * and its keys will be used as action ids. */
+  actions: {
+    editName: {
+      name: 'Edit name',
+      iconClass: 'fa-pencil',
+      onClick: function(row) {
+        toastr.info("'Edit name' clicked on '" + row.name + "'");
+      },
+      isEnabled: function(row) {
+        return row.isEditable;
+      }
+    },
+    editDescription: {
+      name: 'Edit description',
+      iconClass: 'fa-pencil',
+      onClick: function(row) {
+        toastr.info("'Edit description' clicked on '" + row.name + "'");
+      },
+      isEnabled: function(row) {
+        return row.isEditable;
+      }
+    },
+    setEditable: {
+      name: 'Set editable',
+      iconClass: 'fa-unlock',
+      onClick: function(row) {
+        toastr.info("'Set editable' clicked on '" + row.name + "'");
+      },
+      isShown: function(row) {
+        return !row.isEditable;
+      }
+    },
+    setUneditable: {
+      name: 'Set uneditable',
+      iconClass: 'fa-lock',
+      onClick: function(row) {
+        toastr.info("'Set uneditable' clicked on '" + row.name + "'");
+      },
+      isShown: function(row) {
+        return row.isEditable;
+      }
+    },
+    deleteRow: {
+      name: 'Delete row',
+      iconClass: 'fa-trash-o',
+      onClick: function(row) {
+        toastr.info("'Delete row' clicked on '" + row.name + "'");
+      },
+      isEnabled: function(row) {
+        return row.isEditable && row.isRemovable;
+      }
+    }
+  }
+});
+</code></pre>
       </div>
     </div>
 
@@ -314,48 +479,113 @@
 
     <p>Classes can also be added easily to an action by setting a <code>classNames</code> property, which will be parsed through the <a href="https://github.com/JedWatson/classnames">classnames</a> utility. This property can be a string, an object or a function that receives the element's fetched data as a first argument.</p>
 
+    <p>In the same way, an action's <code>name</code> can be defined as a function. In that case, it will be called before
+    each render of the menu, receiving as the first argument the data returned by <code>fetchElementData</code>.
+    </p>
+
     <div class="row">
 
       <style>
-        bg-danger { background-color: #f2dede; }
-        bg-success { background-color: #dff0d8; }
+        .action-danger { background-color: #f2dede; }
+        .action-danger > a { color: #a94442 !important; }
+        /* .action-success { background-color: #dff0d8; } */
+        .action-success > a { color: #3c763d !important; }
       </style>
 
       <div class="col-md-8">
         <table class="table table-striped table-hover">
           <thead>
             <tr>
-              <th>Id</th>
+              <th>#</th>
               <th>Name</th>
               <th>Description</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
             <tr class="demo5TableRow" data-row-id="1">
               <td>1</td>
-              <td>First row</td>
+              <td>John Martin</td>
               <td>Lorem ipsum dolor sit amet</td>
+              <th></th>
             </tr>
             <tr class="demo5TableRow" data-row-id="2">
               <td>2</td>
-              <td>Second row</td>
+              <td>Peter Roberts</td>
               <td>Nemo enim ipsam voluptatem quia voluptas</td>
+              <th></th>
             </tr>
             <tr class="demo5TableRow" data-row-id="3">
               <td>3</td>
-              <td>Third row</td>
-              <td><b><i>No description</i></b></td>
+              <td>Stuart Smith</td>
+              <td>Ut enim ad minima veniam</td>
+              <th><span class="label label-warning pull-right">Not editable</span></th>
             </tr>
           </tbody>
         </table>
+      </div>
+
+      <div class="col-md-12 collapsibleContainer">
+        <p><a href="#" class="collapsibleBtn">View the code <i class="fa fa-fw fa-chevron-circle-left"></i></a></p>
+        <pre class="collapsible hidden"><code class="lang-js">var tableRows = {
+  '1': { first_name: 'John', last_name: 'Martin', is_editable: true },
+  '2': { first_name: 'Peter', last_name: 'Roberts', is_editable: true },
+  '3': { first_name: 'Stuart', last_name: 'Smith', is_editable: false }
+};
+
+var menu = new BootstrapMenu('.demo5TableRow', {
+  fetchElementData: function($rowElem) {
+    var rowId = $rowElem.data('rowId');
+    return tableRows[rowId];
+  },
+  actions: [{
+    name: function(row) {
+      // custom action name, with the name of the selected user
+      if (row.is_editable) {
+        return 'Edit ' + row.first_name;
+      }
+      // basic HTML can also be rendered in the action name
+      return '<i>Not editable</i>';
+    },
+    iconClass: 'fa-pencil',
+    classNames: function(row) {
+      // add the 'action-success' class only if the row is editable
+      return { 'action-success': row.is_editable };
+    },
+    onClick: function(row) {
+      toastr.info("'Edit description' clicked on '" + row.first_name + "'");
+    },
+    isEnabled: function(row) {
+      return row.is_editable;
+    }
+  }, {
+    // custom action name, with the name of the selected user
+    name: function(row) {
+      return 'Message ' + row.first_name;
+    },
+    iconClass: 'fa-envelope-o',
+    onClick: function(row) {
+      toastr.info("'Message " + row.first_name + "' clicked on '" + row.first_name + "'");
+    }
+  }, {
+    name: 'Block account',
+    iconClass: 'fa-trash-o',
+    // always add the class 'action-danger'
+    classNames: 'action-danger',
+    onClick: function(row) {
+      toastr.info("'Delete row' clicked on '" + row.first_name + "'");
+    }
+  }]
+});
+</code></pre>
       </div>
     </div>
 
     <script>
     var tableRows = {
-      '1': { name: 'First row', description: 'Lorem ipsum dolor sit amet' },
-      '2': { name: 'Second row', description: 'Nemo enim ipsam voluptatem quia voluptas' },
-      '3': { name: 'Third row', description: null }
+      '1': { first_name: 'John', last_name: 'Martin', is_editable: true },
+      '2': { first_name: 'Peter', last_name: 'Roberts', is_editable: true },
+      '3': { first_name: 'Stuart', last_name: 'Smith', is_editable: false }
     };
 
     var menu = new BootstrapMenu('.demo5TableRow', {
@@ -364,41 +594,63 @@
         return tableRows[rowId];
       },
       actions: [{
-          name: 'Edit name',
-          iconClass: 'fa-pencil',
-          onClick: function(row) {
-            toastr.info("'Edit name' clicked on '" + row.name + "'");
+        name: function(row) {
+          // custom action name, with the name of the selected user
+          if (row.is_editable) {
+            return 'Edit ' + row.first_name;
           }
-        }, {
-          name: 'Edit description',
-          iconClass: 'fa-pencil',
-          classNames: function(row) {
-            return { 'bg-success': row.description == null };
-          },
-          onClick: function(row) {
-            toastr.info("'Edit description' clicked on '" + row.name + "'");
-          }
-        }, {
-          name: 'Another option',
-          iconClass: 'fa-folder-o',
-          onClick: function(row) {
-            toastr.info("'Another option' clicked on '" + row.name + "'");
-          }
-        }, {
-          name: 'Delete row',
-          iconClass: 'fa-trash-o',
-          classNames: 'bg-danger',
-          onClick: function(row) {
-            toastr.info("'Delete row' clicked on '" + row.name + "'");
-          }
+          // basic HTML can also be rendered in the action name
+          return '<i>Not editable</i>';
+        },
+        iconClass: 'fa-pencil',
+        classNames: function(row) {
+          // add the 'action-success' class only if the row is editable
+          return { 'action-success': row.is_editable };
+        },
+        onClick: function(row) {
+          toastr.info("'Edit description' clicked on '" + row.first_name + "'");
+        },
+        isEnabled: function(row) {
+          return row.is_editable;
         }
-      ]
+      }, {
+        // custom action name, with the name of the selected user
+        name: function(row) {
+          return 'Message ' + row.first_name;
+        },
+        iconClass: 'fa-envelope-o',
+        onClick: function(row) {
+          toastr.info("'Message " + row.first_name + "' clicked on '" + row.first_name + "'");
+        }
+      }, {
+        name: 'Block account',
+        iconClass: 'fa-lock',
+        // always add the class 'action-danger'
+        classNames: 'action-danger',
+        onClick: function(row) {
+          toastr.info("'Delete row' clicked on '" + row.first_name + "'");
+        }
+      }]
     });
     </script>
 
     <div style="margin-bottom: 50px"></div>
 
   </div>
+
+  <script>
+  $('.collapsibleBtn').on('click', function(evt) {
+    var $btn = $(this);
+
+    evt.preventDefault();
+
+    $btn.find('.fa')
+      .toggleClass('fa-chevron-circle-left')
+      .toggleClass('fa-chevron-circle-down');
+
+    $btn.closest('.collapsibleContainer').find('.collapsible').toggleClass('hidden');
+  });
+  </script>
 
 </body>
 
