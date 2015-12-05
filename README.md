@@ -10,7 +10,7 @@ easily.
 Depends on [jQuery](https://jquery.com/). It uses Bootstrap's styling classes, and if using the `iconClass` option, also Font Awesome.
 
 
-* [Demos](https://dgoguerra.github.io/bootstrap-menu/demos.html)
+* [See the demos](https://dgoguerra.github.io/bootstrap-menu/demos.html)
 
 
 Installation
@@ -166,7 +166,7 @@ var menu = new BootstrapMenu('.demo4TableRow', {
 Options
 -------
 
-Context menu initialization options:
+#### Context menu initialization options:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
@@ -177,15 +177,18 @@ Context menu initialization options:
 | `actions` | array&#124;object | Array or object containing the list of actions to be rendered in the context menu. |
 | `actionsGroups` | array | Array to group actions to render them next to each other, with a separator between each group. |
 
-Actions attributes:
+#### Actions attributes:
+
+Every function attribute is called before rendering the menu each time it is opened. If `fetchElementData` was defined, these functions will receive as first argument its returned value for the currently selected element.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| `name` | string | The name of the action. |
-| `iconClass` | string | Font Awesome class of the icon to show for the action. |
-| `onClick` | function | Handler to run when an action is clicked. If `fetchElementData` was defined, receives as first argument its returned value. |
-| `isShown` | function | Called before render, decides if the action should be shown or hidden in the context menu. If `fetchElementData` was defined, receives as first argument its returned value. |
-| `isEnabled` | function | Called before render, decides if the action should appear enabled or disabled in the context menu. If `fetchElementData` was defined, receives as first argument its returned value. |
+| `name` | string&#124;function | The name of the action. |
+| `onClick` | function | Handler to run when an action is clicked. |
+| `iconClass` | string | Optional, Font Awesome class of the icon to show for the action. |
+| `classNames` | string&#124;object&#124;function | Optional, classes to add to the action. |
+| `isShown` | function | Optional, decides if the action should be shown or hidden in the context menu. |
+| `isEnabled` | function | Optional, decides if the action should appear enabled or disabled in the context menu. |
 
 
 License
