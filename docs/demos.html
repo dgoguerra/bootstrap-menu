@@ -216,7 +216,7 @@ var menu3 = new BootstrapMenu('#demo2HoverBtn', {
  * row-specific data in a data-whatever-info="" attribute in each
  * row, you decide what fetchElementData() does!
  */
-var tableRows = {
+var demo3Rows = {
   '1': { name: 'First row', description: 'Lorem ipsum dolor sit amet' },
   '2': { name: 'Second row', description: 'Nemo enim ipsam voluptatem quia voluptas' },
   '3': { name: 'Third row', description: 'Ut enim ad minima veniam' }
@@ -229,7 +229,7 @@ var menu = new BootstrapMenu('.demo3TableRow', {
    * an argument. */
   fetchElementData: function($rowElem) {
     var rowId = $rowElem.data('rowId');
-    return tableRows[rowId];
+    return demo3Rows[rowId];
   },
   actions: [{
     name: 'Edit name',
@@ -252,7 +252,7 @@ var menu = new BootstrapMenu('.demo3TableRow', {
      * row-specific data in a data-whatever-info="" attribute in each
      * row, you decide what fetchElementData() does!
      */
-    var tableRows = {
+    var demo3Rows = {
       '1': { name: 'First row', description: 'Lorem ipsum dolor sit amet' },
       '2': { name: 'Second row', description: 'Nemo enim ipsam voluptatem quia voluptas' },
       '3': { name: 'Third row', description: 'Ut enim ad minima veniam' }
@@ -265,7 +265,7 @@ var menu = new BootstrapMenu('.demo3TableRow', {
        * an argument. */
       fetchElementData: function($rowElem) {
         var rowId = $rowElem.data('rowId');
-        return tableRows[rowId];
+        return demo3Rows[rowId];
       },
       actions: [{
         name: 'Edit name',
@@ -322,7 +322,7 @@ var menu = new BootstrapMenu('.demo3TableRow', {
       </div>
       <div class="col-md-12 collapsibleContainer">
         <p><a href="#" class="collapsibleBtn">View the code <i class="fa fa-fw fa-chevron-circle-left"></i></a></p>
-        <pre class="collapsible hidden"><code class="lang-js">var tableRows = {
+        <pre class="collapsible hidden"><code class="lang-js">var demo4Rows = {
   '1': { name: 'First row', isEditable: true, isRemovable: true },
   '2': { name: 'Second row', isEditable: false, isRemovable: true },
   '3': { name: 'Third row', isEditable: true, isRemovable: false }
@@ -331,7 +331,7 @@ var menu = new BootstrapMenu('.demo3TableRow', {
 var menu = new BootstrapMenu('.demo4TableRow', {
   fetchElementData: function($rowElem) {
     var rowId = $rowElem.data('rowId');
-    return tableRows[rowId];
+    return demo4Rows[rowId];
   },
   /* group actions by their id to make use of separators between
    * them in the context menu. Actions not added to any group with
@@ -400,7 +400,7 @@ var menu = new BootstrapMenu('.demo4TableRow', {
     </div>
 
     <script>
-    var tableRows = {
+    var demo4Rows = {
       '1': { name: 'First row', isEditable: true, isRemovable: true },
       '2': { name: 'Second row', isEditable: false, isRemovable: true },
       '3': { name: 'Third row', isEditable: true, isRemovable: false }
@@ -409,7 +409,7 @@ var menu = new BootstrapMenu('.demo4TableRow', {
     var menu = new BootstrapMenu('.demo4TableRow', {
       fetchElementData: function($rowElem) {
         var rowId = $rowElem.data('rowId');
-        return tableRows[rowId];
+        return demo4Rows[rowId];
       },
       /* group actions by their id to make use of separators between
        * them in the context menu. Actions not added to any group with
@@ -527,7 +527,7 @@ var menu = new BootstrapMenu('.demo4TableRow', {
 
       <div class="col-md-12 collapsibleContainer">
         <p><a href="#" class="collapsibleBtn">View the code <i class="fa fa-fw fa-chevron-circle-left"></i></a></p>
-        <pre class="collapsible hidden"><code class="lang-js">var tableRows = {
+        <pre class="collapsible hidden"><code class="lang-js">var demo5Rows = {
   '1': { first_name: 'John', last_name: 'Martin', is_editable: true },
   '2': { first_name: 'Peter', last_name: 'Roberts', is_editable: true },
   '3': { first_name: 'Stuart', last_name: 'Smith', is_editable: false }
@@ -536,7 +536,7 @@ var menu = new BootstrapMenu('.demo4TableRow', {
 var menu = new BootstrapMenu('.demo5TableRow', {
   fetchElementData: function($rowElem) {
     var rowId = $rowElem.data('rowId');
-    return tableRows[rowId];
+    return demo5Rows[rowId];
   },
   actions: [{
     name: function(row) {
@@ -545,7 +545,7 @@ var menu = new BootstrapMenu('.demo5TableRow', {
         return 'Edit ' + row.first_name;
       }
       // basic HTML can also be rendered in the action name
-      return '<i>Not editable</i>';
+      return '&lt;i&gt;Not editable&lt;/i&gt;';
     },
     iconClass: 'fa-pencil',
     classNames: function(row) {
@@ -582,7 +582,7 @@ var menu = new BootstrapMenu('.demo5TableRow', {
     </div>
 
     <script>
-    var tableRows = {
+    var demo5Rows = {
       '1': { first_name: 'John', last_name: 'Martin', is_editable: true },
       '2': { first_name: 'Peter', last_name: 'Roberts', is_editable: true },
       '3': { first_name: 'Stuart', last_name: 'Smith', is_editable: false }
@@ -591,7 +591,7 @@ var menu = new BootstrapMenu('.demo5TableRow', {
     var menu = new BootstrapMenu('.demo5TableRow', {
       fetchElementData: function($rowElem) {
         var rowId = $rowElem.data('rowId');
-        return tableRows[rowId];
+        return demo5Rows[rowId];
       },
       actions: [{
         name: function(row) {

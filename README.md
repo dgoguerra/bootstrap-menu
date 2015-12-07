@@ -92,18 +92,46 @@ var menu = new BootstrapMenu('#button', {
 
 Extended example ([live demo](https://dgoguerra.github.io/bootstrap-menu/demos.html#demo4)):
 
+```html
+<table>
+  <tr>
+    <th>#</th>
+    <th>Name</th>
+    <th>Description</th>
+  </tr>
+  <!-- the modal will open right-clicking anywhere inside a .demoTableRow -->
+  <tr class="demoTableRow" data-row-id="1">
+    <td>1</td>
+    <td>First row</td>
+    <td>Lorem ipsum dolor sit amet</td>
+  </tr>
+  <tr class="demoTableRow" data-row-id="2">
+    <td>2</td>
+    <td>Second row</td>
+    <td>Nemo enim ipsam voluptatem quia voluptas</td>
+  </tr>
+  <tr class="demoTableRow" data-row-id="3">
+    <td>3</td>
+    <td>Third row</td>
+    <td>Ut enim ad minima veniam</td>
+  </tr>
+</table>
+```
+
 ```js
 /* A centralized container of the table data. You could hold the
  * row-specific data in a data-whatever-info="" attribute in each
  * row, you decide what fetchElementData() does!
  */
 var tableRows = {
-  '1': { name: 'First row', description: 'Lorem ipsum dolor sit amet' },
-  '2': { name: 'Second row', description: 'Nemo enim ipsam voluptatem quia voluptas' },
-  '3': { name: 'Third row', description: 'Ut enim ad minima veniam' }
+  '1': { name: 'First row', isEditable: true, isRemovable: true },
+  '2': { name: 'Second row', isEditable: true, isRemovable: true },
+  '3': { name: 'Third row', isEditable: true, isRemovable: true }
 };
 
-var menu = new BootstrapMenu('.demo4TableRow', {
+var menu = new BootstrapMenu('.demoTableRow', {
+  /* $rowElem is the jQuery element where the menu was opened. The
+   * returned value is the `row` argument passed to each function. */
   fetchElementData: function($rowElem) {
     var rowId = $rowElem.data('rowId');
     return tableRows[rowId];
