@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 
-git checkout origin/master -- docs
+git checkout origin/master -- docs/ dist/
 
-git reset
+git reset -q
 
-mv docs/* .
+rsync -r docs/ . && rm -rf docs
+
+sed -i '' 's/\.\.\/dist/\.\/dist/g' demos.html

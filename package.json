@@ -1,12 +1,10 @@
 {
-  "dependencies": {
-    "bootstrap": "^3.3.5",
-    "bootstrap-menu": "^1.0.2",
-    "jquery": "^2.1.4",
-    "lodash": "^3.10.0",
-    "toastr": "^2.1.0"
-  },
+  "dependencies": {},
   "scripts": {
-    "postinstall": "./scripts/publish-node-modules.sh"
+    "serve": "./node_modules/.bin/static -p 9999",
+    "fetch": "./scripts/checkout-master-demos.sh"
+  },
+  "devDependencies": {
+    "node-static": "^0.7.7"
   }
 }
