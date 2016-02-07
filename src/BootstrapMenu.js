@@ -57,7 +57,7 @@ var defaultOptions = {
 };
 
 function renderMenu(_this) {
-    var $menu = $('<div class="dropdown bootstrapMenu" style="z-index:1000;position:absolute;" />');
+    var $menu = $('<div class="dropdown bootstrapMenu" style="z-index:10000;position:absolute;" />');
 
     var $ul = $('<ul class="dropdown-menu" style="position:static;display:block;font-size:0.9em;" />');
 
