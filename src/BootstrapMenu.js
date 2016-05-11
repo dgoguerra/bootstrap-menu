@@ -179,6 +179,12 @@ function setupActionsEventListeners(_this) {
 
         var $target = $(evt.target);
 
+        // either a divider or the menu (not an option inside it) was clicked,
+        // don't do anything
+        if ($target.is('.divider') || $target.is('.dropdown-menu')) {
+            return;
+        }
+
         var $action = $target.is('[data-action]') ? $target : $target.closest('[data-action]');
         var actionId = $action.data('action');
 
