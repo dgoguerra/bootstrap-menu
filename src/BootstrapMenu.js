@@ -2,7 +2,7 @@
 
 var classNames = require('classnames');
 var $ = require('jquery');
-require('jquery-ui/position');
+require('jquery-ui/ui/position');
 
 // modular lodash requires
 var _ = function() {
