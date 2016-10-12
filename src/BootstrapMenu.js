@@ -43,6 +43,10 @@ var defaultOptions = {
      * between each group. */
     actionsGroups: [],
 
+    /* message to show when there are no actions to show in a menu
+     * (isShown() returned false on all actions) */
+    noActionsMessage: 'No available actions',
+
     /* In some weird cases, another plugin may be installing 'click' listeners
      * in the anchors used for each action of the context menu, and stopping
      * the event bubbling before it reachs this plugin's listener.
@@ -97,6 +101,7 @@ function renderMenu(_this) {
     });
 
     var isFirstNonEmptyGroup = true;
+
     _.each(groups, function(actionsIds) {
         if (actionsIds.length == 0)
             return;
@@ -130,6 +135,14 @@ function renderMenu(_this) {
                 );
             }
         });
+
+        $ul.append(
+            '<li role="presentation" class="noActionsMessage disabled">' +
+            '<a href="#" role="menuitem">' +
+            '<span>' + _this.options.noActionsMessage + '</span>' +
+            '</a>' +
+            '</li>'
+        );
     });
 
     return $menu.append($ul);
@@ -339,10 +352,14 @@ BootstrapMenu.prototype.open = function($openTarget, event) {
 
     var targetData = _this.options.fetchElementData(_this.$openTarget);
 
-    var $actions = this.$menu.find('[data-action]');
+    var $actions = this.$menu.find('[data-action]'),
+        $noActionsMsg = this.$menu.find('.noActionsMessage');
 
-    // clear previously hidden actions
+    // clear previously hidden actions, and hide by default the 'No actions' message
     $actions.show();
+    $noActionsMsg.hide();
+
+    var numShown = 0;
 
     /* go through all actions to update the text to show, which ones to show
      * enabled/disabled and which ones to hide. */
@@ -362,6 +379,8 @@ BootstrapMenu.prototype.open = function($openTarget, event) {
         if (action.isShown && action.isShown(targetData) === false) {
             $action.hide();
             return;
+        } else {
+            numShown++;
         }
 
         // the name provided for an action may be dynamic, provided as a function
@@ -373,6 +392,10 @@ BootstrapMenu.prototype.open = function($openTarget, event) {
             $action.addClass('disabled');
         }
     });
+
+    if (numShown === 0) {
+        $noActionsMsg.show();
+    }
 
     // once it is known which actions are or arent being shown
     // (so we know the final height of the context menu),
