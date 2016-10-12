@@ -178,20 +178,15 @@ function setupActionsEventListeners(_this) {
         evt.stopPropagation();
 
         var $target = $(evt.target);
+        var $action = $target.closest('[data-action]');
 
-        // either a divider or the menu (not an option inside it) was clicked,
-        // don't do anything
-        if ($target.is('.divider') || $target.is('.dropdown-menu')) {
+        // check if the clicked element is an action, and its enabled.
+        // if not don't do anything
+        if (!$action || !$action.length || $action.is('.disabled')) {
             return;
         }
 
-        var $action = $target.is('[data-action]') ? $target : $target.closest('[data-action]');
         var actionId = $action.data('action');
-
-        // action is disabled, dont do anything
-        if ($action.is('.disabled'))
-            return;
-
         var targetData = _this.options.fetchElementData(_this.$openTarget);
 
         /* call the user click handler. It receives the optional user-defined data,
