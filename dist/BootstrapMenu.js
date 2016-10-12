@@ -97,6 +97,10 @@
 	     * between each group. */
 	    actionsGroups: [],
 
+	    /* message to show when there are no actions to show in a menu
+	     * (isShown() returned false on all actions) */
+	    noActionsMessage: 'No available actions',
+
 	    /* In some weird cases, another plugin may be installing 'click' listeners
 	     * in the anchors used for each action of the context menu, and stopping
 	     * the event bubbling before it reachs this plugin's listener.
@@ -151,6 +155,7 @@
 	    });
 
 	    var isFirstNonEmptyGroup = true;
+
 	    _.each(groups, function(actionsIds) {
 	        if (actionsIds.length == 0)
 	            return;
@@ -184,6 +189,14 @@
 	                );
 	            }
 	        });
+
+	        $ul.append(
+	            '<li role="presentation" class="noActionsMessage disabled">' +
+	            '<a href="#" role="menuitem">' +
+	            '<span>' + _this.options.noActionsMessage + '</span>' +
+	            '</a>' +
+	            '</li>'
+	        );
 	    });
 
 	    return $menu.append($ul);
@@ -232,20 +245,15 @@
 	        evt.stopPropagation();
 
 	        var $target = $(evt.target);
+	        var $action = $target.closest('[data-action]');
 
-	        // either a divider or the menu (not an option inside it) was clicked,
-	        // don't do anything
-	        if ($target.is('.divider') || $target.is('.dropdown-menu')) {
+	        // check if the clicked element is an action, and its enabled.
+	        // if not don't do anything
+	        if (!$action || !$action.length || $action.is('.disabled')) {
 	            return;
 	        }
 
-	        var $action = $target.is('[data-action]') ? $target : $target.closest('[data-action]');
 	        var actionId = $action.data('action');
-
-	        // action is disabled, dont do anything
-	        if ($action.is('.disabled'))
-	            return;
-
 	        var targetData = _this.options.fetchElementData(_this.$openTarget);
 
 	        /* call the user click handler. It receives the optional user-defined data,
@@ -398,10 +406,14 @@
 
 	    var targetData = _this.options.fetchElementData(_this.$openTarget);
 
-	    var $actions = this.$menu.find('[data-action]');
+	    var $actions = this.$menu.find('[data-action]'),
+	        $noActionsMsg = this.$menu.find('.noActionsMessage');
 
-	    // clear previously hidden actions
+	    // clear previously hidden actions, and hide by default the 'No actions' message
 	    $actions.show();
+	    $noActionsMsg.hide();
+
+	    var numShown = 0;
 
 	    /* go through all actions to update the text to show, which ones to show
 	     * enabled/disabled and which ones to hide. */
@@ -421,6 +433,8 @@
 	        if (action.isShown && action.isShown(targetData) === false) {
 	            $action.hide();
 	            return;
+	        } else {
+	            numShown++;
 	        }
 
 	        // the name provided for an action may be dynamic, provided as a function
@@ -432,6 +446,10 @@
 	            $action.addClass('disabled');
 	        }
 	    });
+
+	    if (numShown === 0) {
+	        $noActionsMsg.show();
+	    }
 
 	    // once it is known which actions are or arent being shown
 	    // (so we know the final height of the context menu),
@@ -472,7 +490,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
-	  Copyright (c) 2015 Jed Watson.
+	  Copyright (c) 2016 Jed Watson.
 	  Licensed under the MIT License (MIT), see
 	  http://jedwatson.github.io/classnames
 	*/
@@ -484,7 +502,7 @@
 		var hasOwn = {}.hasOwnProperty;
 
 		function classNames () {
-			var classes = '';
+			var classes = [];
 
 			for (var i = 0; i < arguments.length; i++) {
 				var arg = arguments[i];
@@ -493,19 +511,19 @@
 				var argType = typeof arg;
 
 				if (argType === 'string' || argType === 'number') {
-					classes += ' ' + arg;
+					classes.push(arg);
 				} else if (Array.isArray(arg)) {
-					classes += ' ' + classNames.apply(null, arg);
+					classes.push(classNames.apply(null, arg));
 				} else if (argType === 'object') {
 					for (var key in arg) {
 						if (hasOwn.call(arg, key) && arg[key]) {
-							classes += ' ' + key;
+							classes.push(key);
 						}
 					}
 				}
 			}
 
-			return classes.substr(1);
+			return classes.join(' ');
 		}
 
 		if (typeof module !== 'undefined' && module.exports) {
