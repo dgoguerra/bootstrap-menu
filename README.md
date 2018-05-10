@@ -132,7 +132,7 @@ var tableRows = {
 var menu = new BootstrapMenu('.demoTableRow', {
   /* $rowElem is the jQuery element where the menu was opened. The
    * returned value is the `row` argument passed to each function. */
-  fetchElementData: function($rowElem) {
+  fetchElementData: function($rowElem, originalEvent) {
     var rowId = $rowElem.data('rowId');
     return tableRows[rowId];
   },

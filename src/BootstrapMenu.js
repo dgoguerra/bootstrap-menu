@@ -200,7 +200,7 @@ function setupActionsEventListeners(_this) {
         }
 
         var actionId = $action.data('action');
-        var targetData = _this.options.fetchElementData(_this.$openTarget);
+        var targetData = _this.options.fetchElementData(_this.$openTarget, evt);
 
         /* call the user click handler. It receives the optional user-defined data,
          * or undefined. */
@@ -350,7 +350,7 @@ BootstrapMenu.prototype.open = function($openTarget, event) {
 
     this.openEvent = event;
 
-    var targetData = _this.options.fetchElementData(_this.$openTarget);
+    var targetData = _this.options.fetchElementData(_this.$openTarget, event);
 
     var $actions = this.$menu.find('[data-action]'),
         $noActionsMsg = this.$menu.find('.noActionsMessage');
