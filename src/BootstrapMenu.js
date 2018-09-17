@@ -107,7 +107,7 @@ function renderMenu(_this) {
             return;
 
         if (isFirstNonEmptyGroup === false) {
-            $ul.append('<li class="divider"></li>');
+            $ul.append('<li class="dropdown-divider"></li>');
         }
         isFirstNonEmptyGroup = false;
 
